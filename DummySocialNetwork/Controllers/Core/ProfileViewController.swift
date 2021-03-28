@@ -41,14 +41,26 @@ final class ProfileViewController: UIViewController {
         view.addSubview(accountCreatedDateLabel)
         fetchData()
         
-        navigationItem.rightBarButtonItem = UIBarButtonItem(
-            image: UIImage(systemName: "pencil.circle"),
-            style: .plain,
-            target: self,
-            action: #selector(didTapEditProfile))
-        
+        navigationItem.rightBarButtonItems = [
+            UIBarButtonItem(image: UIImage(systemName: "gear"),
+                            style: .plain,
+                            target: self,
+                            action: #selector(didTapSettings)),
+            UIBarButtonItem(
+                image: UIImage(systemName: "pencil.circle"),
+                style: .plain,
+                target: self,
+                action: #selector(didTapEditProfile))
+        ]
     }
     
+    @objc private func didTapSettings() {
+        let vc = SettingsViewController()
+        let navVC = UINavigationController(rootViewController: vc)
+        navVC.modalPresentationStyle = .fullScreen
+        present(navVC, animated: true)
+    }
+        
     @objc private func didTapEditProfile() {
         
         guard let user = user else {

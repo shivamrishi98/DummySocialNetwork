@@ -39,25 +39,18 @@ final class HomeViewController: UIViewController {
             }
         }
         
-        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Log out",
-                                                            style: .plain,
-                                                            target: self,
-                                                            action: #selector(didTapLogout))
+        navigationItem.rightBarButtonItems = [
+            UIBarButtonItem(image: UIImage(systemName: "square.and.pencil"),
+                            style: .plain,
+                            target: self,
+                            action: #selector(didTapPost))
+        ]
+
     }
     
-    @objc private func didTapLogout() {
-        AuthManager.shared.signOut { [weak self] success in
-            DispatchQueue.main.async {
-                if success {
-                    let vc = LoginViewController()
-                    let navVC = UINavigationController(rootViewController: vc)
-                    navVC.modalPresentationStyle = .fullScreen
-                    self?.present(navVC, animated: true)
-                }
-            }
-        }
+    @objc private func didTapPost() {
+        
     }
-    
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()

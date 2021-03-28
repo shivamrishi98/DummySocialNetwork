@@ -26,6 +26,8 @@
 		96BF29542610E652000EBB61 /* PostTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96BF29532610E652000EBB61 /* PostTableViewCell.swift */; };
 		96BF29572610E9A7000EBB61 /* PostViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96BF29562610E9A7000EBB61 /* PostViewModel.swift */; };
 		96BF295A2610EB55000EBB61 /* Post.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96BF29592610EB55000EBB61 /* Post.swift */; };
+		96BF295D2610F813000EBB61 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96BF295C2610F813000EBB61 /* SettingsViewController.swift */; };
+		96BF29602610FC5C000EBB61 /* SettingsSectionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96BF295F2610FC5C000EBB61 /* SettingsSectionViewModel.swift */; };
 		96BF38FB26108851009A8C28 /* EditProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96BF38FA26108851009A8C28 /* EditProfileViewController.swift */; };
 /* End PBXBuildFile section */
 
@@ -51,6 +53,8 @@
 		96BF29532610E652000EBB61 /* PostTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostTableViewCell.swift; sourceTree = "<group>"; };
 		96BF29562610E9A7000EBB61 /* PostViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostViewModel.swift; sourceTree = "<group>"; };
 		96BF29592610EB55000EBB61 /* Post.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Post.swift; sourceTree = "<group>"; };
+		96BF295C2610F813000EBB61 /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
+		96BF295F2610FC5C000EBB61 /* SettingsSectionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsSectionViewModel.swift; sourceTree = "<group>"; };
 		96BF38FA26108851009A8C28 /* EditProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditProfileViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -119,6 +123,7 @@
 			children = (
 				967D25F2260F8E05001F442E /* ProfileViewModel.swift */,
 				96BF29562610E9A7000EBB61 /* PostViewModel.swift */,
+				96BF295F2610FC5C000EBB61 /* SettingsSectionViewModel.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -185,6 +190,7 @@
 			isa = PBXGroup;
 			children = (
 				96BF38FA26108851009A8C28 /* EditProfileViewController.swift */,
+				96BF295C2610F813000EBB61 /* SettingsViewController.swift */,
 			);
 			path = Others;
 			sourceTree = "<group>";
@@ -261,8 +267,10 @@
 				967D25EA260F7F4A001F442E /* TabViewController.swift in Sources */,
 				9639AABA260F5C7100B9260E /* LoginViewController.swift in Sources */,
 				967D25DC260F6467001F442E /* AuthManager.swift in Sources */,
+				96BF29602610FC5C000EBB61 /* SettingsSectionViewModel.swift in Sources */,
 				967D25D3260F62EE001F442E /* RegisterViewController.swift in Sources */,
 				9639AA97260F5BB400B9260E /* AppDelegate.swift in Sources */,
+				96BF295D2610F813000EBB61 /* SettingsViewController.swift in Sources */,
 				967D25D9260F6446001F442E /* ApiManager.swift in Sources */,
 				96BF29572610E9A7000EBB61 /* PostViewModel.swift in Sources */,
 				967D25F3260F8E05001F442E /* ProfileViewModel.swift in Sources */,
