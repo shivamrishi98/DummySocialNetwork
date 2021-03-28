@@ -23,6 +23,7 @@
 		967D25EA260F7F4A001F442E /* TabViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 967D25E9260F7F4A001F442E /* TabViewController.swift */; };
 		967D25EE260F7F5E001F442E /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 967D25ED260F7F5E001F442E /* ProfileViewController.swift */; };
 		967D25F3260F8E05001F442E /* ProfileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 967D25F2260F8E05001F442E /* ProfileViewModel.swift */; };
+		96BF38FB26108851009A8C28 /* EditProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96BF38FA26108851009A8C28 /* EditProfileViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -44,6 +45,7 @@
 		967D25E9260F7F4A001F442E /* TabViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabViewController.swift; sourceTree = "<group>"; };
 		967D25ED260F7F5E001F442E /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
 		967D25F2260F8E05001F442E /* ProfileViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewModel.swift; sourceTree = "<group>"; };
+		96BF38FA26108851009A8C28 /* EditProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditProfileViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -117,6 +119,7 @@
 			children = (
 				9639AAB8260F5C6700B9260E /* Auth */,
 				967D25E8260F7F13001F442E /* Core */,
+				96BF38F926108830009A8C28 /* Others */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -167,6 +170,14 @@
 				967D25ED260F7F5E001F442E /* ProfileViewController.swift */,
 			);
 			path = Core;
+			sourceTree = "<group>";
+		};
+		96BF38F926108830009A8C28 /* Others */ = {
+			isa = PBXGroup;
+			children = (
+				96BF38FA26108851009A8C28 /* EditProfileViewController.swift */,
+			);
+			path = Others;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -246,6 +257,7 @@
 				967D25D9260F6446001F442E /* ApiManager.swift in Sources */,
 				967D25F3260F8E05001F442E /* ProfileViewModel.swift in Sources */,
 				967D25E3260F7511001F442E /* Auth.swift in Sources */,
+				96BF38FB26108851009A8C28 /* EditProfileViewController.swift in Sources */,
 				9639AA99260F5BB400B9260E /* SceneDelegate.swift in Sources */,
 				9639AAB4260F5C1500B9260E /* Extensions.swift in Sources */,
 				967D25D6260F63EA001F442E /* HomeViewController.swift in Sources */,

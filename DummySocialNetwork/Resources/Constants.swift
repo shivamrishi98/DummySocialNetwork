@@ -8,5 +8,5 @@
 import Foundation
 
 struct Constants  {
-    static let baseUrl = "http://localhost:5500/api"
+    static let baseUrl = "http://localhost:5500"
 }

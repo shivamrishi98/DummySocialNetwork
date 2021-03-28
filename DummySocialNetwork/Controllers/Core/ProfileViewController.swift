@@ -40,6 +40,30 @@ final class ProfileViewController: UIViewController {
         view.addSubview(emailLabel)
         view.addSubview(accountCreatedDateLabel)
         fetchData()
+        
+        navigationItem.rightBarButtonItem = UIBarButtonItem(
+            image: UIImage(systemName: "pencil.circle"),
+            style: .plain,
+            target: self,
+            action: #selector(didTapEditProfile))
+        
+    }
+    
+    @objc private func didTapEditProfile() {
+        
+        guard let user = user else {
+            return
+        }
+        let vc = EditProfileViewController(user: user)
+        vc.saveCompletion = { [weak self] success in
+            if success {
+                self?.fetchData()
+            }
+        }
+        let navVC = UINavigationController(rootViewController: vc)
+        navVC.modalPresentationStyle = .fullScreen
+        navVC.navigationBar.tintColor = .label
+        present(navVC, animated: true)
     }
     
     private func fetchData() {
@@ -53,7 +77,7 @@ final class ProfileViewController: UIViewController {
                             ProfileViewModel(
                                 name: user.name,
                                 email: user.email,
-                                dateCreated: user.Date))
+                                dateCreated: user.createdDate))
                 case .failure(let error):
                     print(error)
                 }

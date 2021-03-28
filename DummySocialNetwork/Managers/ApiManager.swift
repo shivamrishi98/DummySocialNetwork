@@ -37,6 +37,8 @@ final class ApiManager {
         var request = URLRequest(url: apiUrl)
         request.setValue("\(token)",
                          forHTTPHeaderField: "access_token")
+        request.setValue("application/json",
+                         forHTTPHeaderField: "Content-Type")
         request.httpMethod = type.rawValue
         request.timeoutInterval = 30
         completion(request)
@@ -62,6 +64,31 @@ final class ApiManager {
                 
             }
             task.resume()
+        }
+    }
+    
+    // Update User Profile
+    public func updateUserProfile(request requestData:UpdateUserProfileRequest,completion: @escaping (Bool) -> Void) {
+        createRequest(with: URL(string: Constants.baseUrl + "/users/profile"),
+                      type: .PUT) { baseRequest in
+            var request = baseRequest
+            let json:[String:String] = [
+                "name":requestData.name,
+                "email":requestData.email
+            ]
+            request.httpBody = try? JSONSerialization.data(withJSONObject: json,
+                                                           options: .fragmentsAllowed)
+            let task = URLSession.shared.dataTask(with: request) { data, _, error in
+                guard let _ = data, error == nil else {
+                    completion(false)
+                    return
+                }
+                completion(true)
+                
+            }
+            
+            task.resume()
+            
         }
     }
     

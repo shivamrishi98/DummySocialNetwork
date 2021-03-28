@@ -15,5 +15,10 @@ struct User:Codable {
     let _id:String
     let name:String
     let email:String
-    let Date:String
+    let createdDate:String
+}
+
+struct UpdateUserProfileRequest:Codable {
+    let name:String
+    let email:String
 }

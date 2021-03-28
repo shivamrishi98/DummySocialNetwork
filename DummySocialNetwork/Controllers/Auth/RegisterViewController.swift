@@ -150,10 +150,7 @@ final class RegisterViewController: UIViewController {
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
-        scrollView.frame = CGRect(x: 0,
-                                  y: 0,
-                                  width: view.width,
-                                  height: view.height)
+        scrollView.frame = view.bounds
         
         titleLabel.frame = CGRect(x: 20,
                                   y: 50,
