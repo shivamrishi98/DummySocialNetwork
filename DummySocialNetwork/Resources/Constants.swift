@@ -8,5 +8,7 @@
 import Foundation
 
 struct Constants  {
-    static let baseUrl = "http://localhost:5500"
+    static let devURL = "http://b385d0a8c6d3.ngrok.io"
+    static let localHostURL = "http://localhost:5500"
+    static let baseUrl = localHostURL
 }
