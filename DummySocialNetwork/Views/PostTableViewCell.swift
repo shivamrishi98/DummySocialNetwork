@@ -11,6 +11,14 @@ class PostTableViewCell: UITableViewCell {
 
     static let identifier = "PostTableViewCell"
     
+    private let nameLabel:UILabel = {
+        let label = UILabel()
+        label.textColor = .label
+        label.font = .systemFont(ofSize: 14, weight: .semibold)
+        label.numberOfLines = 0
+        return label
+    }()
+    
     private let contentLabel:UILabel = {
         let label = UILabel()
         label.textColor = .label
@@ -32,6 +40,7 @@ class PostTableViewCell: UITableViewCell {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         contentView.addSubview(dateCreatedLabel)
         contentView.addSubview(contentLabel)
+        contentView.addSubview(nameLabel)
     }
     
     required init?(coder: NSCoder) {
@@ -41,11 +50,16 @@ class PostTableViewCell: UITableViewCell {
     override func layoutSubviews() {
         super.layoutSubviews()
         
-        dateCreatedLabel.frame = CGRect(x: 10,
-                                        y: 5,
-                                        width: frame.width-20,
-                                        height: 15)
+        nameLabel.frame = CGRect(x: 10,
+                                 y: 5,
+                                 width: frame.width*0.65-20,
+                                 height: 15)
         
+        dateCreatedLabel.frame = CGRect(x: nameLabel.right + 10,
+                                        y: 5,
+                                        width: frame.width-nameLabel.width-20,
+                                        height: 15)
+
         contentLabel.frame = CGRect(x: 10,
                                     y: dateCreatedLabel.bottom + 2,
                                     width: frame.width-20,
@@ -54,11 +68,13 @@ class PostTableViewCell: UITableViewCell {
     
     override func prepareForReuse() {
         super.prepareForReuse()
+        nameLabel.text = nil
         dateCreatedLabel.text = nil
         contentLabel.text = nil
     }
     
     func configure(with viewModel:PostViewModel){
+        nameLabel.text = viewModel.name
         dateCreatedLabel.text = viewModel.createdDate
         contentLabel.text = viewModel.content
     }

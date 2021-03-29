@@ -104,6 +104,9 @@ final class HomeViewController: UIViewController {
     }
     
     private func configureUI() {
+        NotificationCenter.default.post(name: .didNotifyPostCount,
+                                        object: nil,
+                                        userInfo: nil)
         if posts.isEmpty {
             noPostsLabel.isHidden = false
             tableView.isHidden = true
@@ -130,6 +133,7 @@ extension HomeViewController:UITableViewDelegate,UITableViewDataSource {
         }
         let model = posts[indexPath.row]
         let viewModel = PostViewModel(content: model.content,
+                                      name: model.name,
                                       createdDate: String.formattedDate(
                                         string: model.createdDate,
                                         dateFormat: "MMM d, h:mm a"))
@@ -149,4 +153,31 @@ extension HomeViewController:UITableViewDelegate,UITableViewDataSource {
         return UIView()
     }
     
+    func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle {
+        return .delete
+    }
+    
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        
+        if editingStyle == .delete {
+            tableView.beginUpdates()
+            let postId = posts[indexPath.row]._id
+            let deletedPost = posts.remove(at: indexPath.row)
+            tableView.deleteRows(at: [indexPath],
+                                 with: .left)
+            ApiManager.shared.deletePost(with: postId) { [weak self] success in
+                DispatchQueue.main.async {
+                    if !success {
+                        // add model and row back and show error alert
+                        self?.posts.insert(deletedPost, at: indexPath.row)
+                        tableView.insertRows(at: [indexPath],
+                                             with: .left)
+                    }
+                    self?.configureUI()
+                }
+            }
+            tableView.endUpdates()
+        }
+    }
 }
+

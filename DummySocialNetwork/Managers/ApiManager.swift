@@ -141,4 +141,19 @@ final class ApiManager {
         }
     }
     
+    // Delete post by id
+    public func deletePost(with id:String,completion:@escaping (Bool)->Void) {
+        createRequest(with: URL(string: Constants.baseUrl + "/posts/delete?postId=\(id)"),
+                      type: .DELETE) { request in
+            let task = URLSession.shared.dataTask(with: request) { data, _, error in
+                guard let _ = data, error == nil else {
+                    completion(false)
+                    return
+                }
+                completion(true)
+            }
+            task.resume()
+        }
+    }
+    
 }

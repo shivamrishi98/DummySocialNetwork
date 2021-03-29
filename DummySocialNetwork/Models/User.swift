@@ -15,6 +15,7 @@ struct User:Codable {
     let _id:String
     let name:String
     let email:String
+    let posts:[String]
     let createdDate:String
 }
 

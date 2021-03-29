@@ -15,6 +15,7 @@ struct Post:Codable {
     let _id:String
     let content:String
     let userId:String
+    let name:String
     let createdDate:String
 }
 

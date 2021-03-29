@@ -26,6 +26,13 @@ final class ProfileViewController: UIViewController {
         return label
     }()
     
+    private let postsCountLabel:UILabel = {
+        let label = UILabel()
+        label.textColor = .label
+        label.font = .systemFont(ofSize: 18)
+        return label
+    }()
+    
     private let accountCreatedDateLabel:UILabel = {
         let label = UILabel()
         label.textColor = .label
@@ -33,13 +40,24 @@ final class ProfileViewController: UIViewController {
         return label
     }()
     
+    private var observer:NSObjectProtocol?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = . systemBackground
         view.addSubview(nameLabel)
         view.addSubview(emailLabel)
+        view.addSubview(postsCountLabel)
         view.addSubview(accountCreatedDateLabel)
         fetchData()
+        
+        observer = NotificationCenter.default.addObserver(
+            forName: .didNotifyPostCount,
+            object: nil,
+            queue: .main,
+            using: { [weak self] _ in
+                self?.fetchData()
+            })
         
         navigationItem.rightBarButtonItems = [
             UIBarButtonItem(image: UIImage(systemName: "gear"),
@@ -89,6 +107,7 @@ final class ProfileViewController: UIViewController {
                             ProfileViewModel(
                                 name: user.name,
                                 email: user.email,
+                                postsCount: user.posts.count,
                                 dateCreated: user.createdDate))
                 case .failure(let error):
                     print(error)
@@ -100,6 +119,7 @@ final class ProfileViewController: UIViewController {
     private func configure(with viewModel:ProfileViewModel) {
         nameLabel.text = "Name: \(viewModel.name)"
         emailLabel.text = "Email: \(viewModel.email)"
+        postsCountLabel.text = "Posts: \(viewModel.postsCount)"
         let date = String.formattedDate(string: viewModel.dateCreated)
         accountCreatedDateLabel.text = "Creation Date: \(date)"
     }
@@ -116,8 +136,13 @@ final class ProfileViewController: UIViewController {
                                  width: view.width-20,
                                  height: 20)
         
-        accountCreatedDateLabel.frame = CGRect(x: 10,
+        postsCountLabel.frame = CGRect(x: 10,
                                   y: emailLabel.bottom + 10,
+                                 width: view.width-20,
+                                 height: 20)
+        
+        accountCreatedDateLabel.frame = CGRect(x: 10,
+                                  y: postsCountLabel.bottom + 10,
                                  width: view.width-20,
                                  height: 20)
         

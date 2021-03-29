@@ -10,5 +10,6 @@ import Foundation
 struct ProfileViewModel {
     let name:String
     let email:String
+    let postsCount:Int
     let dateCreated:String
 }
