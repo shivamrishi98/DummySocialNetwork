@@ -11,33 +11,41 @@ final class HomeViewController: UIViewController {
 
     private var posts = [Post]()
 
-    private let tableView:UITableView = {
-       let tableView = UITableView()
-        tableView.register(PostTableViewCell.self,
-                           forCellReuseIdentifier: PostTableViewCell.identifier)
-       return tableView
+    private let noPostsLabel:UILabel = {
+        let label = UILabel()
+        label.text = "No Posts"
+        label.isHidden = true
+        label.textColor = .label
+        label.textAlignment = .center
+        label.font = .systemFont(ofSize: 18, weight: .semibold)
+        return label
     }()
     
+    private let tableView:UITableView = {
+        let tableView = UITableView()
+        tableView.isHidden = true
+        tableView.register(PostTableViewCell.self,
+                           forCellReuseIdentifier: PostTableViewCell.identifier)
+        return tableView
+    }()
     
+    private let refreshControl:UIRefreshControl = {
+        let refreshControl = UIRefreshControl()
+        return refreshControl
+    }()
+    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         title = "Home"
         view.backgroundColor = .systemBackground
         view.addSubview(tableView)
+        view.addSubview(noPostsLabel)
         tableView.delegate = self
         tableView.dataSource = self
-        
-        ApiManager.shared.getMyPosts { [weak self] result in
-            DispatchQueue.main.async {
-                switch result {
-                case .success(let posts):
-                    self?.posts = posts
-                    self?.tableView.reloadData()
-                case .failure(let error):
-                    print(error.localizedDescription)
-                }
-            }
-        }
+        tableView.refreshControl = refreshControl
+        refreshControl.addTarget(self, action: #selector(didPullToRefresh), for: .valueChanged)
+        fetchMyPosts()
         
         navigationItem.rightBarButtonItems = [
             UIBarButtonItem(image: UIImage(systemName: "square.and.pencil"),
@@ -48,15 +56,65 @@ final class HomeViewController: UIViewController {
 
     }
     
+    @objc private func didPullToRefresh() {
+        DispatchQueue.main.async { [weak self] in
+            self?.refreshControl.endRefreshing()
+        }
+    }
+    
     @objc private func didTapPost() {
-        
+        let vc = CreatePostViewController()
+        vc.createPostCompletion = { [weak self] success in
+            DispatchQueue.main.async {
+                if success {
+                    self?.fetchMyPosts()
+                }
+            }
+        }
+        let navVC = UINavigationController(rootViewController: vc)
+        navVC.modalPresentationStyle = .fullScreen
+        navVC.navigationBar.tintColor = .label
+        present(navVC, animated: true)
     }
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         tableView.frame = view.bounds
+        
+        noPostsLabel.frame = CGRect(x: 0,
+                                    y: 0,
+                                    width: view.width,
+                                    height: 50)
+        noPostsLabel.center = view.center
+       
     }
 
+    private func fetchMyPosts() {
+        ApiManager.shared.getMyPosts { [weak self] result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let posts):
+                    self?.posts = posts
+                    self?.configureUI()
+                case .failure(let error):
+                    print(error.localizedDescription)
+                }
+            }
+        }
+    }
+    
+    private func configureUI() {
+        if posts.isEmpty {
+            noPostsLabel.isHidden = false
+            tableView.isHidden = true
+        } else {
+            noPostsLabel.isHidden = true
+            tableView.isHidden = false
+            tableView.reloadData()
+        }
+    }
+    
+    
 }
 
 extension HomeViewController:UITableViewDelegate,UITableViewDataSource {
@@ -72,7 +130,9 @@ extension HomeViewController:UITableViewDelegate,UITableViewDataSource {
         }
         let model = posts[indexPath.row]
         let viewModel = PostViewModel(content: model.content,
-                                      createdDate: String.formattedDate(string: model.createdDate))
+                                      createdDate: String.formattedDate(
+                                        string: model.createdDate,
+                                        dateFormat: "MMM d, h:mm a"))
         cell.configure(with: viewModel)
         return cell
     }

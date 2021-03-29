@@ -44,7 +44,7 @@ class PostTableViewCell: UITableViewCell {
         dateCreatedLabel.frame = CGRect(x: 10,
                                         y: 5,
                                         width: frame.width-20,
-                                        height: 10)
+                                        height: 15)
         
         contentLabel.frame = CGRect(x: 10,
                                     y: dateCreatedLabel.bottom + 2,

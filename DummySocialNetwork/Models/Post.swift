@@ -18,4 +18,7 @@ struct Post:Codable {
     let createdDate:String
 }
 
+struct CreatePostRequest:Codable {
+    let content:String
+}
 

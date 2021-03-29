@@ -116,4 +116,29 @@ final class ApiManager {
         }
     }
     
+    
+    // Create Post
+    public func createPost(request requestData:CreatePostRequest,completion: @escaping (Bool)-> Void) {
+        createRequest(with: URL(string: Constants.baseUrl + "/posts/create"),
+                      type: .POST) { baseRequest in
+            var request = baseRequest
+            let json:[String:String] = [
+                "content":requestData.content
+            ]
+            request.httpBody = try? JSONSerialization.data(withJSONObject: json,
+                                                           options: .fragmentsAllowed)
+            let task = URLSession.shared.dataTask(with: request) { data, _, error in
+                guard let _ = data, error == nil else {
+                    completion(false)
+                    return
+                }
+                
+                completion(true)
+                
+            }
+            
+            task.resume()
+        }
+    }
+    
 }

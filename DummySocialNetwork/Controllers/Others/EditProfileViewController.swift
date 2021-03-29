@@ -31,7 +31,7 @@ class EditProfileViewController: UIViewController {
                                             width: 5,
                                             height: 0))
         textfield.leftViewMode = .always
-        textfield.backgroundColor = .secondarySystemBackground
+        textfield.backgroundColor = .systemBackground
         let layer = textfield.layer
         layer.borderWidth = 1
         layer.borderColor = UIColor.label.cgColor
@@ -52,7 +52,7 @@ class EditProfileViewController: UIViewController {
                                             width: 5,
                                             height: 0))
         textfield.leftViewMode = .always
-        textfield.backgroundColor = .secondarySystemBackground
+        textfield.backgroundColor = .systemBackground
         let layer = textfield.layer
         layer.borderWidth = 1
         layer.borderColor = UIColor.label.cgColor

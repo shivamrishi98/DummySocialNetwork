@@ -44,18 +44,21 @@ extension DateFormatter {
         return dateFormatter
     }()
     
-    static let displayDateFormatter:DateFormatter = {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateStyle = .long
-        return dateFormatter
-    }()
+    static func makeDisplayDateFormatter(dateStyle:Style,dateFormat:String?) -> DateFormatter {
+        let displayDateFormatter:DateFormatter = DateFormatter()
+        displayDateFormatter.dateStyle = dateStyle
+        displayDateFormatter.dateFormat = dateFormat
+        return displayDateFormatter
+    }
+
 }
 
 extension String {
-    static func formattedDate(string: String) -> String {
+    static func formattedDate(string: String,dateStyle:DateFormatter.Style = .long,dateFormat:String? = nil) -> String {
         guard let date = DateFormatter.dateFormatter.date(from: string) else {
             return string
         }
-        return DateFormatter.displayDateFormatter.string(from: date)
+        return DateFormatter.makeDisplayDateFormatter(dateStyle: dateStyle,
+                                                      dateFormat: dateFormat ?? nil).string(from: date)
     }
 }
