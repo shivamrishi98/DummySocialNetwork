@@ -35,6 +35,8 @@ final class HomeViewController: UIViewController {
     }()
     
 
+    private var observer:NSObjectProtocol?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         title = "Home"
@@ -46,6 +48,14 @@ final class HomeViewController: UIViewController {
         tableView.refreshControl = refreshControl
         refreshControl.addTarget(self, action: #selector(didPullToRefresh), for: .valueChanged)
         fetchMyPosts()
+        
+        observer = NotificationCenter.default.addObserver(
+            forName: .didNotifyProfileUpdate,
+            object: nil,
+            queue: .main,
+            using: { [weak self] _ in
+                self?.fetchMyPosts()
+            })
         
         navigationItem.rightBarButtonItems = [
             UIBarButtonItem(image: UIImage(systemName: "square.and.pencil"),

@@ -65,4 +65,5 @@ extension String {
 
 extension Notification.Name {
     static let didNotifyPostCount = Notification.Name("didNotifyPostCount")
+    static let didNotifyProfileUpdate = Notification.Name("didNotifyProfileUpdate")
 }

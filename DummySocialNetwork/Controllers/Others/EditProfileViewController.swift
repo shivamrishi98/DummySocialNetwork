@@ -136,6 +136,9 @@ class EditProfileViewController: UIViewController {
                 if success {
                     self?.dismiss(animated: true, completion: {
                         self?.saveCompletion?(true)
+                        NotificationCenter.default.post(name: .didNotifyProfileUpdate,
+                                                        object: nil,
+                                                        userInfo: nil)
                     })
                 }
             }
