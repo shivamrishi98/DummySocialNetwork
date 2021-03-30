@@ -23,3 +23,7 @@ struct UpdateUserProfileRequest:Codable {
     let name:String
     let email:String
 }
+
+struct SearchUsersResult:Codable {
+    let users:[User]
+}

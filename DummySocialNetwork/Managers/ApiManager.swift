@@ -69,6 +69,31 @@ final class ApiManager {
         }
     }
     
+    // Search users with name
+    public func searchUsers(request requestData:String,
+                            completion: @escaping ((Result<[User],Error>)->Void)){
+        createRequest(with: URL(string: Constants.baseUrl + "/users/search?name=\(requestData)"),
+                      type: .GET) { request in
+            let task = URLSession.shared.dataTask(with: request) { data, _, error in
+                guard let data = data, error == nil else {
+                    completion(.failure(ApiError.failedToGetData))
+                    return
+                }
+                
+                do {
+                    let result = try JSONDecoder().decode(SearchUsersResult.self,
+                                                          from: data)
+                    completion(.success(result.users))
+                } catch {
+                    completion(.failure(error))
+                }
+                
+                
+            }
+            task.resume()
+        }
+    }
+    
     // Update User Profile
     public func updateUserProfile(request requestData:UpdateUserProfileRequest,completion: @escaping (Bool) -> Void) {
         createRequest(with: URL(string: Constants.baseUrl + "/users/profile"),
