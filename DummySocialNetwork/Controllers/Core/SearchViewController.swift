@@ -71,6 +71,7 @@ extension SearchViewController:UISearchBarDelegate, UISearchResultsUpdating {
                     resultsController.update(with: users)
                 case .failure(let error):
                     print(error)
+                    resultsController.removeUserFromResults()
                     resultsController.configureUI()
                 }
             }

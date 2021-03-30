@@ -73,6 +73,7 @@ class SearchResultsViewController: UIViewController {
             tableView.isHidden = false
             tableView.reloadData()
         }
+        
     }
     
     func hideNoUserLabel() {
