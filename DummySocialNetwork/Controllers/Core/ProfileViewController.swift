@@ -11,6 +11,18 @@ import UIKit
 final class ProfileViewController: UIViewController {
 
     private var user:User?
+    private let userId:String?
+    private let isOwner:Bool
+    
+    init(isOwner:Bool = false,userId:String? = nil) {
+        self.isOwner = isOwner
+        self.userId = userId
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     private let nameLabel:UILabel = {
         let label = UILabel()
@@ -44,32 +56,40 @@ final class ProfileViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        title = "Profile"
         view.backgroundColor = . systemBackground
         view.addSubview(nameLabel)
         view.addSubview(emailLabel)
         view.addSubview(postsCountLabel)
         view.addSubview(accountCreatedDateLabel)
-        fetchData()
         
-        observer = NotificationCenter.default.addObserver(
-            forName: .didNotifyPostCount,
-            object: nil,
-            queue: .main,
-            using: { [weak self] _ in
-                self?.fetchData()
-            })
+        if isOwner {
+            navigationItem.rightBarButtonItems = [
+                UIBarButtonItem(image: UIImage(systemName: "gear"),
+                                style: .plain,
+                                target: self,
+                                action: #selector(didTapSettings)),
+                UIBarButtonItem(
+                    image: UIImage(systemName: "pencil.circle"),
+                    style: .plain,
+                    target: self,
+                    action: #selector(didTapEditProfile))
+            ]
+            fetchMyProfile()
+            observer = NotificationCenter.default.addObserver(
+                forName: .didNotifyPostCount,
+                object: nil,
+                queue: .main,
+                using: { [weak self] _ in
+                    self?.fetchMyProfile()
+                })
+        } else {
+            guard let userId = userId else {
+                return
+            }
+            fetchUserProfile(userId: userId)
+        }
         
-        navigationItem.rightBarButtonItems = [
-            UIBarButtonItem(image: UIImage(systemName: "gear"),
-                            style: .plain,
-                            target: self,
-                            action: #selector(didTapSettings)),
-            UIBarButtonItem(
-                image: UIImage(systemName: "pencil.circle"),
-                style: .plain,
-                target: self,
-                action: #selector(didTapEditProfile))
-        ]
     }
     
     @objc private func didTapSettings() {
@@ -87,7 +107,7 @@ final class ProfileViewController: UIViewController {
         let vc = EditProfileViewController(user: user)
         vc.saveCompletion = { [weak self] success in
             if success {
-                self?.fetchData()
+                self?.fetchMyProfile()
             }
         }
         let navVC = UINavigationController(rootViewController: vc)
@@ -96,8 +116,28 @@ final class ProfileViewController: UIViewController {
         present(navVC, animated: true)
     }
     
-    private func fetchData() {
+    private func fetchMyProfile() {
         ApiManager.shared.getUserProfile { [weak self] result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let user):
+                    self?.user = user
+                    self?.configure(
+                        with:
+                            ProfileViewModel(
+                                name: user.name,
+                                email: user.email,
+                                postsCount: user.posts.count,
+                                dateCreated: user.createdDate))
+                case .failure(let error):
+                    print(error)
+                }
+            }
+        }
+    }
+    
+    private func fetchUserProfile(userId:String) {
+        ApiManager.shared.getUserProfile(with:userId) { [weak self] result in
             DispatchQueue.main.async {
                 switch result {
                 case .success(let user):

@@ -14,7 +14,7 @@ final class TabViewController: UITabBarController {
         
         let vc1 = HomeViewController()
         let vc2 = SearchViewController()
-        let vc3 = ProfileViewController()
+        let vc3 = ProfileViewController(isOwner: true)
         
         vc1.title = "Home"
         vc2.title = "Search"

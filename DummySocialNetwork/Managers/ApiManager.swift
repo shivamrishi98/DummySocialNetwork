@@ -49,7 +49,29 @@ final class ApiManager {
     
     // Get Current User Profile
     public func getUserProfile(completion: @escaping (Result<User,Error>) -> Void) {
-        createRequest(with: URL(string: Constants.baseUrl + "/users/profile"),
+        createRequest(with: URL(string: Constants.baseUrl + "/users/myprofile"),
+                      type: .GET) { request in
+            let task = URLSession.shared.dataTask(with: request) { data, _, error in
+                guard let data = data, error == nil else {
+                    completion(.failure(ApiError.failedToGetData))
+                    return
+                }
+                
+                do {
+                    let result = try JSONDecoder().decode(UserResponse.self, from: data)
+                    completion(.success(result.user))
+                } catch {
+                    completion(.failure(error))
+                }
+                
+            }
+            task.resume()
+        }
+    }
+    
+    // Get User Profile from userId
+    public func getUserProfile(with userId:String,completion: @escaping (Result<User,Error>) -> Void) {
+        createRequest(with: URL(string: Constants.baseUrl + "/users/profile?userId=\(userId)"),
                       type: .GET) { request in
             let task = URLSession.shared.dataTask(with: request) { data, _, error in
                 guard let data = data, error == nil else {
@@ -70,9 +92,9 @@ final class ApiManager {
     }
     
     // Search users with name
-    public func searchUsers(request requestData:String,
+    public func searchUsers(with query:String,
                             completion: @escaping ((Result<[User],Error>)->Void)){
-        createRequest(with: URL(string: Constants.baseUrl + "/users/search?name=\(requestData)"),
+        createRequest(with: URL(string: Constants.baseUrl + "/users/search?name=\(query)"),
                       type: .GET) { request in
             let task = URLSession.shared.dataTask(with: request) { data, _, error in
                 guard let data = data, error == nil else {

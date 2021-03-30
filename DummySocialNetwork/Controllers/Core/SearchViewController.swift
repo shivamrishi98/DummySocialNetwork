@@ -10,7 +10,8 @@ import UIKit
 class SearchViewController: UIViewController {
     
     private let searchController:UISearchController = {
-        let searchController = UISearchController(searchResultsController: SearchResultsViewController())
+        let searchController = UISearchController(
+            searchResultsController: SearchResultsViewController())
         searchController.searchBar.placeholder = "Search Users..."
         searchController.searchBar.searchBarStyle = .minimal
         searchController.definesPresentationContext = true
@@ -37,7 +38,9 @@ extension SearchViewController:UISearchBarDelegate, UISearchResultsUpdating {
             return
         }
         
-        ApiManager.shared.searchUsers(request: query) { result in
+        resultsController.delegate = self
+        
+        ApiManager.shared.searchUsers(with: query) { result in
             DispatchQueue.main.async {
                 switch result {
                 case .success(let users):
@@ -57,6 +60,8 @@ extension SearchViewController:UISearchBarDelegate, UISearchResultsUpdating {
             return
         }
         
+        resultsController.delegate = self
+        
         guard let query = searchController.searchBar.text,
               !query.trimmingCharacters(in: .whitespaces).isEmpty else {
             resultsController.removeUserFromResults()
@@ -64,7 +69,7 @@ extension SearchViewController:UISearchBarDelegate, UISearchResultsUpdating {
             return
         }
         
-        ApiManager.shared.searchUsers(request: query) { result in
+        ApiManager.shared.searchUsers(with: query) { result in
             DispatchQueue.main.async {
                 switch result {
                 case .success(let users):
@@ -81,4 +86,12 @@ extension SearchViewController:UISearchBarDelegate, UISearchResultsUpdating {
     
 }
 
+extension SearchViewController:SearchResultsViewControllerDelegate {
+    
+    func searchResultsViewControllerDidSelectUser(_ result: User) {
+        let vc = ProfileViewController(userId:result._id)
+        navigationController?.pushViewController(vc, animated: true)
+    }
+    
+}
 

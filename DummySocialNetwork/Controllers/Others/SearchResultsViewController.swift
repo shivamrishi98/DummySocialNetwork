@@ -7,9 +7,15 @@
 
 import UIKit
 
+protocol SearchResultsViewControllerDelegate:AnyObject {
+    func searchResultsViewControllerDidSelectUser(_ result:User)
+}
+
 class SearchResultsViewController: UIViewController {
 
     private var users = [User]()
+    
+    weak var delegate:SearchResultsViewControllerDelegate?
     
      private let tableView:UITableView = {
         let tableView = UITableView()
@@ -36,6 +42,11 @@ class SearchResultsViewController: UIViewController {
         view.addSubview(noUserLabel)
         tableView.delegate = self
         tableView.dataSource = self
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        navigationController?.navigationBar.isHidden = true
     }
     
     override func viewDidLayoutSubviews() {
@@ -105,6 +116,7 @@ extension SearchResultsViewController:UITableViewDelegate,UITableViewDataSource 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         let model = users[indexPath.row]
+        delegate?.searchResultsViewControllerDidSelectUser(model)
     }
     
 }
