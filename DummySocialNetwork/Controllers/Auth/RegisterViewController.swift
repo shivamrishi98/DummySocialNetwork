@@ -88,7 +88,7 @@ final class RegisterViewController: UIViewController {
     }()
     
     private let registerButton:UIButton = {
-        let button = UIButton()
+        let button = UIButton(type: .system)
         button.backgroundColor = .systemBlue
         button.setTitle("Register", for: .normal)
         button.setTitleColor(.white, for: .normal)

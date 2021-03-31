@@ -31,6 +31,7 @@ final class ProfileViewController: UIViewController {
         let layer = imageView.layer
         layer.borderWidth = 1
         layer.borderColor = UIColor.label.cgColor
+        layer.masksToBounds = true
         return imageView
     }()
     
@@ -62,6 +63,18 @@ final class ProfileViewController: UIViewController {
         return label
     }()
     
+    private let actionButton:UIButton = {
+        let button = UIButton(type: .system)
+        button.setTitle("Follow", for: .normal)
+        button.setTitleColor(.white, for: .normal)
+        button.titleLabel?.font = .systemFont(ofSize: 18, weight: .semibold)
+        button.backgroundColor = .systemBlue
+        button.layer.masksToBounds = true
+        button.layer.cornerRadius = 12
+        button.isHidden = true
+        return button
+    }()
+    
     private var observer:NSObjectProtocol?
     
     override func viewDidLoad() {
@@ -73,8 +86,8 @@ final class ProfileViewController: UIViewController {
         view.addSubview(postsCountLabel)
         view.addSubview(accountCreatedDateLabel)
         view.addSubview(profileImageView)
+        view.addSubview(actionButton)
         
-        profileImageView.layer.masksToBounds = true
         profileImageView.layer.cornerRadius = 75
         
         if isOwner {
@@ -102,8 +115,21 @@ final class ProfileViewController: UIViewController {
                 return
             }
             fetchUserProfile(userId: userId)
+            actionButton.isHidden = false
         }
         
+        actionButton.addTarget(self,
+                               action: #selector(didTapActionButton),
+                               for: .touchUpInside)
+        
+    }
+    
+    @objc private func didTapActionButton() {
+        if actionButton.currentTitle == "Follow" {
+            actionButton.setTitle("Following", for: .normal)
+        } else {
+            actionButton.setTitle("Follow", for: .normal)
+        }
     }
     
     @objc private func didTapSettings() {
@@ -185,12 +211,18 @@ final class ProfileViewController: UIViewController {
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
+    
+        actionButton.frame = CGRect(x: view.width-120,
+                                    y: view.safeAreaInsets.top + 10,
+                                    width: 100,
+                                    height: 44)
         
         profileImageView.frame = CGRect(x: view.width/2-75,
-                                        y: view.safeAreaInsets.top + 10,
+                                        y: actionButton.bottom + 10,
                                         width: 150,
                                         height: 150)
     
+        
         nameLabel.frame = CGRect(x: 10,
                                  y: profileImageView.bottom + 10,
                                  width: view.width-20,
