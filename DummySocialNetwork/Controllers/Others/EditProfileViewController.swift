@@ -239,7 +239,7 @@ extension EditProfileViewController:UINavigationControllerDelegate,UIImagePicker
         let mimeType = "image/\(imageUrl.pathExtension)"
         profileImageView.image = image
         
-        self.profilePictureRequest = ProfilePictureRequest(fileName: fileName,
+        profilePictureRequest = ProfilePictureRequest(fileName: fileName,
                                             mimeType: mimeType,
                                             imageData: imageData)
         

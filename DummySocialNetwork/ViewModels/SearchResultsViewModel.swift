@@ -9,4 +9,5 @@ import Foundation
 
 struct SearchResultsViewModel {
     let name:String
+    let profilePictureUrl:URL?
 }

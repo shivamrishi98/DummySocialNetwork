@@ -107,7 +107,7 @@ final class HomeViewController: UIViewController {
                     self?.posts = posts
                     self?.configureUI()
                 case .failure(let error):
-                    print(error.localizedDescription)
+                    print(error)
                 }
             }
         }

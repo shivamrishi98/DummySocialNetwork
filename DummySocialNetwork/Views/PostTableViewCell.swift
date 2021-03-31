@@ -71,14 +71,14 @@ class PostTableViewCell: UITableViewCell {
                                         height: 25)
         
         nameLabel.frame = CGRect(x: profileImageView.right + 5,
-                                 y: 10,
+                                 y: 5,
                                  width: frame.width*0.60-profileImageView.width-30,
-                                 height: 15)
+                                 height: 25)
         
         dateCreatedLabel.frame = CGRect(x: nameLabel.right + 5,
                                         y: 5,
                                         width: frame.width-profileImageView.width-nameLabel.width,
-                                        height: 15)
+                                        height: 25)
 
         contentLabel.frame = CGRect(x: 40,
                                     y: profileImageView.bottom,

@@ -30,8 +30,15 @@ struct UpdateUserProfileRequest:Codable {
 struct SearchUsersResult:Codable {
     let users:[User]
 }
+struct ProfilePictureRequest {
+    let fileName:String
+    let mimeType:String
+    let imageData:Data
+}
 
 struct UploadProfilePictureResponse:Codable {
     let message:String
     let imageUrl:String?
 }
+
+

@@ -168,7 +168,6 @@ final class ApiManager {
     public func updateUserProfile(request requestData:UpdateUserProfileRequest,completion: @escaping (Bool) -> Void) {
         createRequest(with: URL(string: Constants.baseUrl + "/users/profile"),
                       type: .PUT) { baseRequest in
-            print("calling update profile api")
             var request = baseRequest
             let json:[String:String] = [
                 "name":requestData.name,
@@ -193,7 +192,6 @@ final class ApiManager {
     public func uploadProfilePicture(request requestModel:ProfilePictureRequest,completion: @escaping (Result<UploadProfilePictureResponse,Error>)->Void) {
         createMultipartFormRequest(with: URL(string: Constants.baseUrl + "/users/uploadProfileImage"),
                                    requestModel: requestModel) { request in
-            print("calling upload profile picture api")
             let task = URLSession.shared.dataTask(with: request) { data, _, error in
                 guard let data = data, error == nil else {
                     completion(.failure(ApiError.failedToGetData))
@@ -276,8 +274,3 @@ final class ApiManager {
     
 }
 
-struct ProfilePictureRequest {
-    let fileName:String
-    let mimeType:String
-    let imageData:Data
-}

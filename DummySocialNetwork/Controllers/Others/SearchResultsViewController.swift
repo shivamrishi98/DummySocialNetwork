@@ -108,7 +108,9 @@ extension SearchResultsViewController:UITableViewDelegate,UITableViewDataSource 
         }
         
         let model = users[indexPath.row]
-        let viewModel = SearchResultsViewModel(name: model.name)
+        let viewModel = SearchResultsViewModel(
+            name: model.name,
+            profilePictureUrl: URL(string: model.profilePictureUrl ?? ""))
         cell.configure(with: viewModel)
         return cell
     }
