@@ -23,8 +23,15 @@ struct User:Codable {
 struct UpdateUserProfileRequest:Codable {
     let name:String
     let email:String
+    let profilePictureUrl:String
+    
 }
 
 struct SearchUsersResult:Codable {
     let users:[User]
+}
+
+struct UploadProfilePictureResponse:Codable {
+    let message:String
+    let imageUrl:String?
 }

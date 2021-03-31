@@ -190,22 +190,22 @@ final class ApiManager {
         }
     }
     
-    public func uploadProfilePicture(request requestModel:ProfilePictureRequest,completion: @escaping (Bool)->Void) {
+    public func uploadProfilePicture(request requestModel:ProfilePictureRequest,completion: @escaping (Result<UploadProfilePictureResponse,Error>)->Void) {
         createMultipartFormRequest(with: URL(string: Constants.baseUrl + "/users/uploadProfileImage"),
                                    requestModel: requestModel) { request in
             print("calling upload profile picture api")
             let task = URLSession.shared.dataTask(with: request) { data, _, error in
                 guard let data = data, error == nil else {
-                    completion(false)
+                    completion(.failure(ApiError.failedToGetData))
                     return
                 }
                 do {
-                    let data = try JSONSerialization.jsonObject(with: data, options: .allowFragments)
-                    print(data)
-                    completion(true)
+                    let result = try JSONDecoder().decode(UploadProfilePictureResponse.self,
+                                                        from: data)
+                    completion(.success(result))
                 } catch {
                     print(error)
-                    completion(false)
+                    completion(.failure(error))
                 }
             }
             task.resume()

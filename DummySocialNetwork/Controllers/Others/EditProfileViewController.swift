@@ -168,27 +168,43 @@ class EditProfileViewController: UIViewController {
         }
         
         let request = UpdateUserProfileRequest(name: name,
-                                               email: email)
+                                               email: email,
+                                               profilePictureUrl:user.profilePictureUrl ?? "")
         
-        ApiManager.shared.updateUserProfile(request: request) { [weak self] success in
-            DispatchQueue.main.async {
-                if success {
-                    
-                    guard let request = self?.profilePictureRequest else {
-                        self?.dismissVC()
-                        return
-                    }
-                    // If profile picture selected then call upload profile picture api
-                    ApiManager.shared.uploadProfilePicture(request: request) { success in
-                        if success {
-                            self?.dismissVC()
+        if let profilePictureRequest = self.profilePictureRequest {
+            // If profile picture selected then call upload profile picture api
+            ApiManager.shared.uploadProfilePicture(request: profilePictureRequest) { [weak self] result in
+                DispatchQueue.main.async {
+                    switch result {
+                    case .success(let response):
+                        let newRequest = UpdateUserProfileRequest(
+                            name: name,
+                            email: email,
+                            profilePictureUrl:response.imageUrl ?? "")
+                        
+                        ApiManager.shared.updateUserProfile(request: newRequest) { success in
+                            DispatchQueue.main.async {
+                                if success {
+                                    self?.dismissVC()
+                                }
+                            }
                         }
+                    case .failure(let error):
+                        print(error)
                     }
-                    
                 }
             }
+            
+        } else {
+            ApiManager.shared.updateUserProfile(request: request) { [weak self] success in
+                DispatchQueue.main.async {
+                    if success {
+                        self?.dismissVC()
+                    }
+                }
+            }
+            
         }
-        
     }
 
     private func dismissVC() {

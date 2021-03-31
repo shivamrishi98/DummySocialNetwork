@@ -10,5 +10,6 @@ import Foundation
 struct PostViewModel {
     let content:String
     let name:String
+    let profilePictureUrl:URL?
     let createdDate:String
 }
