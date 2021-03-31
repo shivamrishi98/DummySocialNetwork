@@ -45,6 +45,54 @@ final class ApiManager {
 
     }
     
+    private func createMultipartFormRequest(
+        with url:URL?,
+        type:HTTPMethod = .POST,
+        requestModel:ProfilePictureRequest,
+        completion: @escaping (URLRequest) -> Void) {
+        
+        guard let token = AuthManager.shared.accessToken else {
+            return
+        }
+        guard let apiUrl = url else {
+            return
+        }
+        var request = URLRequest(url: apiUrl)
+        request.setValue("\(token)",
+                         forHTTPHeaderField: "access_token")
+        request.httpMethod = type.rawValue
+        request.timeoutInterval = 30
+        
+        let boundary = "---------------------------\(UUID().uuidString)---------------------------"
+        
+        //Main Boundary
+        request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
+        
+        var requestData = Data()
+        
+        let lineBreak = "\r\n"
+      
+        //Attachment
+        requestData.appendString(string: "--\(boundary + lineBreak)")
+        requestData.appendString(string: "Content-Disposition: form-data; name=\"file\"; filename=\"\(requestModel.fileName)\"\(lineBreak);")
+        requestData.appendString(string: "Content-Type: \(requestModel.mimeType)\(lineBreak + lineBreak)")
+        requestData.append(requestModel.imageData)
+        requestData.appendString(string: "\(lineBreak + lineBreak)")
+        
+        //End of Main Boundary
+        requestData.append("--\(boundary)--\(lineBreak)" .data(using: .utf8)!)
+        
+        //Content-Length
+        request.addValue("\(requestData.count)", forHTTPHeaderField: "Content-Length")
+        
+        request.httpBody = requestData
+        
+        completion(request)
+        
+    }
+    
+    
+    
     // MARK: - User
     
     // Get Current User Profile
@@ -120,6 +168,7 @@ final class ApiManager {
     public func updateUserProfile(request requestData:UpdateUserProfileRequest,completion: @escaping (Bool) -> Void) {
         createRequest(with: URL(string: Constants.baseUrl + "/users/profile"),
                       type: .PUT) { baseRequest in
+            print("calling update profile api")
             var request = baseRequest
             let json:[String:String] = [
                 "name":requestData.name,
@@ -138,6 +187,28 @@ final class ApiManager {
             
             task.resume()
             
+        }
+    }
+    
+    public func uploadProfilePicture(request requestModel:ProfilePictureRequest,completion: @escaping (Bool)->Void) {
+        createMultipartFormRequest(with: URL(string: Constants.baseUrl + "/users/uploadProfileImage"),
+                                   requestModel: requestModel) { request in
+            print("calling upload profile picture api")
+            let task = URLSession.shared.dataTask(with: request) { data, _, error in
+                guard let data = data, error == nil else {
+                    completion(false)
+                    return
+                }
+                do {
+                    let data = try JSONSerialization.jsonObject(with: data, options: .allowFragments)
+                    print(data)
+                    completion(true)
+                } catch {
+                    print(error)
+                    completion(false)
+                }
+            }
+            task.resume()
         }
     }
     
@@ -203,4 +274,10 @@ final class ApiManager {
         }
     }
     
+}
+
+struct ProfilePictureRequest {
+    let fileName:String
+    let mimeType:String
+    let imageData:Data
 }

@@ -12,11 +12,22 @@ class EditProfileViewController: UIViewController {
     var saveCompletion:((Bool)->Void)?
     
     private let user:User
-    
+    private var profilePictureRequest:ProfilePictureRequest?
     
     private let scrollView:UIScrollView = {
         let scrollView = UIScrollView()
         return scrollView
+    }()
+    
+    private let profileImageView:UIImageView = {
+        let imageView = UIImageView()
+        imageView.tintColor = .label
+        imageView.contentMode = .scaleAspectFill
+        imageView.isUserInteractionEnabled = true
+        let layer = imageView.layer
+        layer.borderWidth = 1
+        layer.borderColor = UIColor.label.cgColor
+        return imageView
     }()
     
     private let nameTextfield:UITextField = {
@@ -76,11 +87,19 @@ class EditProfileViewController: UIViewController {
         view.backgroundColor = .secondarySystemBackground
         title = "Edit Profile"
         view.addSubview(scrollView)
+        scrollView.addSubview(profileImageView)
         scrollView.addSubview(nameTextfield)
         scrollView.addSubview(emailTextfield)
         
         scrollView.contentSize = CGSize(width: view.width,
                                         height: view.height)
+        
+        profileImageView.layer.masksToBounds = true
+        profileImageView.layer.cornerRadius = 75
+        
+        let gesture = UITapGestureRecognizer(target: self,
+                                             action: #selector(didTapSelectProfileImage))
+        profileImageView.addGestureRecognizer(gesture)
         
         configureUI(user: user)
         navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel,
@@ -92,10 +111,22 @@ class EditProfileViewController: UIViewController {
         
     }
     
+    @objc private func didTapSelectProfileImage() {
+        let picker = UIImagePickerController()
+        picker.delegate = self
+        picker.sourceType = .photoLibrary
+        picker.allowsEditing = true
+        present(picker, animated: true)
+    }
+    
     private func configureUI(user:User) {
         DispatchQueue.main.async { [weak self] in
             self?.nameTextfield.text = user.name
             self?.emailTextfield.text = user.email
+            self?.profileImageView.sd_setImage(
+                with: URL(string: user.profilePictureUrl ?? ""),
+                placeholderImage: UIImage(systemName: "person"),
+                completed: nil)
         }
     }
     
@@ -112,8 +143,13 @@ class EditProfileViewController: UIViewController {
         
         scrollView.frame = view.bounds
         
+        profileImageView.frame = CGRect(x: view.width/2-75,
+                                        y: view.safeAreaInsets.top + 10,
+                                        width: 150,
+                                        height: 150)
+        
         nameTextfield.frame = CGRect(x: 50,
-                                     y: view.safeAreaInsets.top + 50,
+                                     y: profileImageView.bottom + 50,
                                       width: view.width-100,
                                       height: 44)
         
@@ -125,25 +161,72 @@ class EditProfileViewController: UIViewController {
     }
     
     private func updateProfile() {
+     
         guard let name = nameTextfield.text,
               let email = emailTextfield.text else {
             return
         }
+        
         let request = UpdateUserProfileRequest(name: name,
                                                email: email)
+        
         ApiManager.shared.updateUserProfile(request: request) { [weak self] success in
             DispatchQueue.main.async {
                 if success {
-                    self?.dismiss(animated: true, completion: {
-                        self?.saveCompletion?(true)
-                        NotificationCenter.default.post(name: .didNotifyProfileUpdate,
-                                                        object: nil,
-                                                        userInfo: nil)
-                    })
+                    
+                    guard let request = self?.profilePictureRequest else {
+                        self?.dismissVC()
+                        return
+                    }
+                    // If profile picture selected then call upload profile picture api
+                    ApiManager.shared.uploadProfilePicture(request: request) { success in
+                        if success {
+                            self?.dismissVC()
+                        }
+                    }
+                    
                 }
             }
         }
         
     }
 
+    private func dismissVC() {
+        DispatchQueue.main.async { [weak self] in
+            self?.dismiss(animated: true, completion: {
+                self?.saveCompletion?(true)
+                NotificationCenter.default.post(name: .didNotifyProfileUpdate,
+                                                object: nil,
+                                                userInfo: nil)
+            })
+        }
+    }
+    
+}
+
+extension EditProfileViewController:UINavigationControllerDelegate,UIImagePickerControllerDelegate {
+    
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        picker.dismiss(animated: true, completion: nil)
+    }
+    
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        picker.dismiss(animated: true, completion: nil)
+        
+        guard let image = info[.editedImage] as? UIImage,
+              let imageData = image.jpegData(compressionQuality: 1),
+              let imageUrl = info[.imageURL]as? URL,
+              let fileName = imageUrl.pathComponents.last else {
+            return
+        }
+   
+        let mimeType = "image/\(imageUrl.pathExtension)"
+        profileImageView.image = image
+        
+        self.profilePictureRequest = ProfilePictureRequest(fileName: fileName,
+                                            mimeType: mimeType,
+                                            imageData: imageData)
+        
+    }
+    
 }

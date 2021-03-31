@@ -6,7 +6,7 @@
 //
 
 import UIKit
-
+import SDWebImage
 
 final class ProfileViewController: UIViewController {
 
@@ -23,6 +23,16 @@ final class ProfileViewController: UIViewController {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
+    private let profileImageView:UIImageView = {
+        let imageView = UIImageView()
+        imageView.tintColor = .label
+        imageView.contentMode = .scaleAspectFill
+        let layer = imageView.layer
+        layer.borderWidth = 1
+        layer.borderColor = UIColor.label.cgColor
+        return imageView
+    }()
     
     private let nameLabel:UILabel = {
         let label = UILabel()
@@ -62,6 +72,10 @@ final class ProfileViewController: UIViewController {
         view.addSubview(emailLabel)
         view.addSubview(postsCountLabel)
         view.addSubview(accountCreatedDateLabel)
+        view.addSubview(profileImageView)
+        
+        profileImageView.layer.masksToBounds = true
+        profileImageView.layer.cornerRadius = 75
         
         if isOwner {
             navigationItem.rightBarButtonItems = [
@@ -128,6 +142,7 @@ final class ProfileViewController: UIViewController {
                                 name: user.name,
                                 email: user.email,
                                 postsCount: user.posts.count,
+                                profileImageUrl:URL(string: user.profilePictureUrl ?? ""),
                                 dateCreated: user.createdDate))
                 case .failure(let error):
                     print(error)
@@ -148,6 +163,7 @@ final class ProfileViewController: UIViewController {
                                 name: user.name,
                                 email: user.email,
                                 postsCount: user.posts.count,
+                                profileImageUrl: URL(string: user.profilePictureUrl ?? ""),
                                 dateCreated: user.createdDate))
                 case .failure(let error):
                     print(error)
@@ -160,6 +176,9 @@ final class ProfileViewController: UIViewController {
         nameLabel.text = "Name: \(viewModel.name)"
         emailLabel.text = "Email: \(viewModel.email)"
         postsCountLabel.text = "Posts: \(viewModel.postsCount)"
+        profileImageView.sd_setImage(with: viewModel.profileImageUrl,
+                                     placeholderImage: UIImage(systemName: "person"),
+                                     completed: nil)
         let date = String.formattedDate(string: viewModel.dateCreated)
         accountCreatedDateLabel.text = "Creation Date: \(date)"
     }
@@ -167,8 +186,13 @@ final class ProfileViewController: UIViewController {
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
+        profileImageView.frame = CGRect(x: view.width/2-75,
+                                        y: view.safeAreaInsets.top + 10,
+                                        width: 150,
+                                        height: 150)
+    
         nameLabel.frame = CGRect(x: 10,
-                                 y: view.safeAreaInsets.top + 10,
+                                 y: profileImageView.bottom + 10,
                                  width: view.width-20,
                                  height: 20)
         emailLabel.frame = CGRect(x: 10,

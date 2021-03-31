@@ -16,6 +16,7 @@ struct User:Codable {
     let name:String
     let email:String
     let posts:[String]
+    let profilePictureUrl:String?
     let createdDate:String
 }
 
