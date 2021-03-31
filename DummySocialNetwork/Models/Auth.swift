@@ -29,4 +29,11 @@ struct SignUpResponse:Codable {
     let user:User
 }
 
+struct ChangePasswordRequest:Codable {
+    let oldpassword:String
+    let newpassword:String
+}
 
+struct ChangePasswordResponse:Codable {
+    let message:String
+}

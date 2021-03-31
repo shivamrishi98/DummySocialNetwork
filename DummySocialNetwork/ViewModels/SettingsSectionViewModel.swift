@@ -8,6 +8,7 @@
 import Foundation
 
 enum SettingsViewModelType {
+    case changePassword
     case logout
 }
 

@@ -99,6 +99,52 @@ final class AuthManager {
         task.resume()
     }
     
+    // Change Password
+    public func changePassword(request model:ChangePasswordRequest,
+                               completion: @escaping (Bool) -> Void) {
+        
+        guard let token = AuthManager.shared.accessToken else {
+            return
+        }
+        guard let apiUrl = URL(string: Constants.baseUrl + "/auth/changePassword") else {
+            return
+        }
+        
+        var request = URLRequest(url: apiUrl)
+        request.setValue("\(token)",
+                         forHTTPHeaderField: "access_token")
+        request.setValue("application/json",
+                         forHTTPHeaderField: "Content-Type")
+        request.httpMethod = "POST"
+        let json:[String:String] = [
+            "oldpassword":model.oldpassword,
+            "newpassword":model.newpassword
+        ]
+        request.httpBody = try? JSONSerialization.data(withJSONObject: json, options: .fragmentsAllowed)
+        request.timeoutInterval = 30
+       
+        let task = URLSession.shared.dataTask(with: request) { data, _, error in
+            guard let data = data, error == nil else {
+                completion(false)
+                return
+            }
+            do {
+                let result = try JSONDecoder().decode(ChangePasswordResponse.self,
+                                                 from: data)
+                if result.message.contains("Invalid") {
+                    completion(false)
+                    return
+                }
+                completion(true)
+                
+            } catch {
+                completion(false)
+            }
+        }
+        task.resume()
+    }
+    
+    
     // Log Out
     public func signOut(completion:@escaping (Bool) -> Void) {
         UserDefaults.standard.setValue(nil, forKey: "access_token")
