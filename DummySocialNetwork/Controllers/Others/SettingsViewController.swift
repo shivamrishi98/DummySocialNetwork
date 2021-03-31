@@ -91,11 +91,13 @@ class SettingsViewController: UIViewController {
         alert.addTextField { texfield in
             texfield.placeholder = "Old Password..."
             texfield.isSecureTextEntry = true
+            texfield.font = .systemFont(ofSize: 24, weight: .semibold)
         }
         
         alert.addTextField { texfield in
             texfield.placeholder = "New Password..."
             texfield.isSecureTextEntry = true
+            texfield.font = .systemFont(ofSize: 24, weight: .semibold)
         }
         
         alert.addAction(
@@ -134,6 +136,7 @@ class SettingsViewController: UIViewController {
         alert.addAction(UIAlertAction(title: "Cancel",
                                       style: .cancel,
                                       handler: nil))
+      
         present(alert, animated: true)
     }
     
