@@ -22,9 +22,8 @@ class ListUsersViewController: UIViewController {
         return tableView
     }()
     
-    private let noUserLabel:UILabel = {
+    private let noDataFoundLabel:UILabel = {
         let label = UILabel()
-        label.text = "No User Found"
         label.isHidden = true
         label.textColor = .label
         label.textAlignment = .center
@@ -49,7 +48,7 @@ class ListUsersViewController: UIViewController {
         title = vcTitle
         view.backgroundColor = .systemBackground
         view.addSubview(tableView)
-        view.addSubview(noUserLabel)
+        view.addSubview(noDataFoundLabel)
         tableView.delegate = self
         tableView.dataSource = self
         fetchData()
@@ -67,19 +66,20 @@ class ListUsersViewController: UIViewController {
         super.viewDidLayoutSubviews()
         tableView.frame = view.bounds
         
-        noUserLabel.frame = CGRect(x: 0,
+        noDataFoundLabel.frame = CGRect(x: 0,
                                     y: 0,
                                     width: view.width,
                                     height: 50)
-        noUserLabel.center = view.center
+        noDataFoundLabel.center = view.center
     }
     
     private func configureUI() {
         if users.isEmpty {
-            noUserLabel.isHidden = false
+            noDataFoundLabel.text = "No \(vcTitle)"
+            noDataFoundLabel.isHidden = false
             tableView.isHidden = true
         } else {
-            noUserLabel.isHidden = true
+            noDataFoundLabel.isHidden = true
             tableView.isHidden = false
             tableView.reloadData()
         }
