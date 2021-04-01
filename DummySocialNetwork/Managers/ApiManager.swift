@@ -268,6 +268,52 @@ final class ApiManager {
         }
     }
     
+    // Get followers from userId
+    public func getFollowers(with userId:String,
+                             completion: @escaping ((Result<[User],Error>)->Void)) {
+        createRequest(with: URL(string: Constants.baseUrl + "/users/getfollowers?userId=\(userId)"),
+                      type: .GET) { request in
+            let task = URLSession.shared.dataTask(with: request) { data, _,error in
+                guard let data = data, error == nil else {
+                    completion(.failure(ApiError.failedToGetData))
+                    return
+                }
+                
+                do {
+                    let result = try JSONDecoder().decode(SearchUsersResult.self,
+                                                          from: data)
+                    completion(.success(result.users))
+                } catch {
+                    completion(.failure(error))
+                }
+            }
+            task.resume()
+        }
+    }
+    
+    // Get followings from userId
+    public func getFollowings(with userId:String,
+                             completion: @escaping ((Result<[User],Error>)->Void)) {
+        createRequest(with: URL(string: Constants.baseUrl + "/users/getfollowing?userId=\(userId)"),
+                      type: .GET) { request in
+            let task = URLSession.shared.dataTask(with: request) { data, _,error in
+                guard let data = data, error == nil else {
+                    completion(.failure(ApiError.failedToGetData))
+                    return
+                }
+                
+                do {
+                    let result = try JSONDecoder().decode(SearchUsersResult.self,
+                                                          from: data)
+                    completion(.success(result.users))
+                } catch {
+                    completion(.failure(error))
+                }
+            }
+            task.resume()
+        }
+    }
+    
     // MARK: - Posts
     
     // Get My Posts

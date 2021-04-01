@@ -88,12 +88,34 @@ final class ProfileViewController: UIViewController {
         return button
     }()
     
+    private let showFollowersListButton:UIButton = {
+        let button = UIButton(type: .system)
+        button.setTitle("Show list", for: .normal)
+        button.setTitleColor(.white, for: .normal)
+        button.titleLabel?.font = .systemFont(ofSize: 16, weight: .bold)
+        button.backgroundColor = .systemBlue
+        button.layer.masksToBounds = true
+        button.layer.cornerRadius = 5
+        return button
+    }()
+    
+    private let showFollowingsListButton:UIButton = {
+        let button = UIButton(type: .system)
+        button.setTitle("Show list", for: .normal)
+        button.setTitleColor(.white, for: .normal)
+        button.titleLabel?.font = .systemFont(ofSize: 16, weight: .bold)
+        button.backgroundColor = .systemBlue
+        button.layer.masksToBounds = true
+        button.layer.cornerRadius = 5
+        return button
+    }()
+    
     private var observer:NSObjectProtocol?
     
     override func viewDidLoad() {
         super.viewDidLoad()
         title = "Profile"
-        view.backgroundColor = . systemBackground
+        view.backgroundColor = .systemBackground
         view.addSubview(nameLabel)
         view.addSubview(emailLabel)
         view.addSubview(postsCountLabel)
@@ -102,6 +124,8 @@ final class ProfileViewController: UIViewController {
         view.addSubview(followingCountLabel)
         view.addSubview(profileImageView)
         view.addSubview(actionButton)
+        view.addSubview(showFollowersListButton)
+        view.addSubview(showFollowingsListButton)
         
         profileImageView.layer.cornerRadius = 75
         
@@ -158,7 +182,32 @@ final class ProfileViewController: UIViewController {
         actionButton.addTarget(self,
                                action: #selector(didTapActionButton),
                                for: .touchUpInside)
+        showFollowersListButton.addTarget(self,
+                               action: #selector(didTapShowFollowerListButton),
+                               for: .touchUpInside)
+        showFollowingsListButton.addTarget(self,
+                               action: #selector(didTapShowFollowingListButton),
+                               for: .touchUpInside)
         
+    }
+    
+    @objc private func didTapShowFollowerListButton() {
+        guard let user = user else {
+            return
+        }
+        let vc = ListUsersViewController(vcTitle: "Followers",
+                                         userId: user._id)
+        navigationController?.pushViewController(vc, animated: true)
+    }
+    
+    @objc private func didTapShowFollowingListButton() {
+        guard let user = user else {
+            return
+        }
+        let vc = ListUsersViewController(vcTitle: "Followings",
+                                         isFollowing: true,
+                                         userId: user._id)
+        navigationController?.pushViewController(vc, animated: true)
     }
     
     @objc private func didTapActionButton() {
@@ -302,12 +351,22 @@ final class ProfileViewController: UIViewController {
         
         followersCountLabel.frame = CGRect(x: 10,
                                   y: postsCountLabel.bottom + 10,
-                                 width: view.width-20,
+                                  width: view.width*0.65-20,
+                                 height: 20)
+        
+        showFollowersListButton.frame = CGRect(x: followersCountLabel.right + 10,
+                                  y: postsCountLabel.bottom + 10,
+                                  width: view.width-followersCountLabel.width-30,
                                  height: 20)
         
         followingCountLabel.frame = CGRect(x: 10,
                                   y: followersCountLabel.bottom + 10,
-                                 width: view.width-20,
+                                 width: view.width*0.65-20,
+                                 height: 20)
+        
+        showFollowingsListButton.frame = CGRect(x: followingCountLabel.right + 10,
+                                  y: followersCountLabel.bottom + 10,
+                                  width: view.width-followingCountLabel.width-30,
                                  height: 20)
         
         accountCreatedDateLabel.frame = CGRect(x: 10,
