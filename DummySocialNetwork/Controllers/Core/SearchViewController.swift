@@ -89,7 +89,7 @@ extension SearchViewController:UISearchBarDelegate, UISearchResultsUpdating {
 extension SearchViewController:SearchResultsViewControllerDelegate {
     
     func searchResultsViewControllerDidSelectUser(_ result: User) {
-        let vc = ProfileViewController(userId:result._id)
+        let vc = ProfileViewController(user: result)
         navigationController?.pushViewController(vc, animated: true)
     }
     

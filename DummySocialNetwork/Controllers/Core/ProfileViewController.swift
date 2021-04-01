@@ -11,12 +11,11 @@ import SDWebImage
 final class ProfileViewController: UIViewController {
 
     private var user:User?
-    private let userId:String?
     private let isOwner:Bool
     
-    init(isOwner:Bool = false,userId:String? = nil) {
+    init(isOwner:Bool = false,user:User? = nil) {
         self.isOwner = isOwner
-        self.userId = userId
+        self.user = user
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -56,6 +55,20 @@ final class ProfileViewController: UIViewController {
         return label
     }()
     
+    private let followersCountLabel:UILabel = {
+        let label = UILabel()
+        label.textColor = .label
+        label.font = .systemFont(ofSize: 18)
+        return label
+    }()
+    
+    private let followingCountLabel:UILabel = {
+        let label = UILabel()
+        label.textColor = .label
+        label.font = .systemFont(ofSize: 18)
+        return label
+    }()
+    
     private let accountCreatedDateLabel:UILabel = {
         let label = UILabel()
         label.textColor = .label
@@ -85,6 +98,8 @@ final class ProfileViewController: UIViewController {
         view.addSubview(emailLabel)
         view.addSubview(postsCountLabel)
         view.addSubview(accountCreatedDateLabel)
+        view.addSubview(followersCountLabel)
+        view.addSubview(followingCountLabel)
         view.addSubview(profileImageView)
         view.addSubview(actionButton)
         
@@ -110,12 +125,34 @@ final class ProfileViewController: UIViewController {
                 using: { [weak self] _ in
                     self?.fetchMyProfile()
                 })
+            observer = NotificationCenter.default.addObserver(
+                forName: .didNotifyFollowUnfollowUpdate,
+                object: nil,
+                queue: .main,
+                using: { [weak self] _ in
+                    self?.fetchMyProfile()
+                })
+            
         } else {
-            guard let userId = userId else {
+            
+            guard let user = user else {
                 return
             }
-            fetchUserProfile(userId: userId)
+            
+            let viewModel = ProfileViewModel(
+                name: user.name,
+                email: user.email,
+                postsCount: user.posts.count,
+                followersCount: user.followers.count,
+                followingsCount: user.following.count,
+                profileImageUrl: URL(string: user.profilePictureUrl ?? ""),
+                dateCreated: user.createdDate)
+            
+            DispatchQueue.main.async { [weak self] in
+                self?.configure(with: viewModel)
+            }
             actionButton.isHidden = false
+            checkForAction()
         }
         
         actionButton.addTarget(self,
@@ -125,10 +162,30 @@ final class ProfileViewController: UIViewController {
     }
     
     @objc private func didTapActionButton() {
-        if actionButton.currentTitle == "Follow" {
-            actionButton.setTitle("Following", for: .normal)
+        
+        guard let userId = user?._id else {
+            return
+        }
+        if  actionButton.titleLabel?.text == "Follow" {
+            ApiManager.shared.followUser(with: userId) { [weak self] success in
+                DispatchQueue.main.async {
+                    self?.actionButton.setTitle("Unfollow", for: .normal)
+                    self?.fetchUserProfile(userId: userId)
+                    NotificationCenter.default.post(name: .didNotifyFollowUnfollowUpdate,
+                                                    object: nil,
+                                                    userInfo: nil)
+                }
+            }
         } else {
-            actionButton.setTitle("Follow", for: .normal)
+            ApiManager.shared.unfollowUser(with: userId) { [weak self] success in
+                DispatchQueue.main.async {
+                    self?.actionButton.setTitle("Follow", for: .normal)
+                    self?.fetchUserProfile(userId: userId)
+                    NotificationCenter.default.post(name: .didNotifyFollowUnfollowUpdate,
+                                                    object: nil,
+                                                    userInfo: nil)
+                }
+            }
         }
     }
     
@@ -168,6 +225,8 @@ final class ProfileViewController: UIViewController {
                                 name: user.name,
                                 email: user.email,
                                 postsCount: user.posts.count,
+                                followersCount: user.followers.count,
+                                followingsCount: user.following.count,
                                 profileImageUrl:URL(string: user.profilePictureUrl ?? ""),
                                 dateCreated: user.createdDate))
                 case .failure(let error):
@@ -189,6 +248,8 @@ final class ProfileViewController: UIViewController {
                                 name: user.name,
                                 email: user.email,
                                 postsCount: user.posts.count,
+                                followersCount: user.followers.count,
+                                followingsCount: user.following.count,
                                 profileImageUrl: URL(string: user.profilePictureUrl ?? ""),
                                 dateCreated: user.createdDate))
                 case .failure(let error):
@@ -202,6 +263,8 @@ final class ProfileViewController: UIViewController {
         nameLabel.text = "Name: \(viewModel.name)"
         emailLabel.text = "Email: \(viewModel.email)"
         postsCountLabel.text = "Posts: \(viewModel.postsCount)"
+        followersCountLabel.text = "Followers: \(viewModel.followersCount)"
+        followingCountLabel.text = "Followings: \(viewModel.followingsCount)"
         profileImageView.sd_setImage(with: viewModel.profileImageUrl,
                                      placeholderImage: UIImage(systemName: "person"),
                                      completed: nil)
@@ -237,11 +300,44 @@ final class ProfileViewController: UIViewController {
                                  width: view.width-20,
                                  height: 20)
         
-        accountCreatedDateLabel.frame = CGRect(x: 10,
+        followersCountLabel.frame = CGRect(x: 10,
                                   y: postsCountLabel.bottom + 10,
                                  width: view.width-20,
                                  height: 20)
         
+        followingCountLabel.frame = CGRect(x: 10,
+                                  y: followersCountLabel.bottom + 10,
+                                 width: view.width-20,
+                                 height: 20)
+        
+        accountCreatedDateLabel.frame = CGRect(x: 10,
+                                  y: followingCountLabel.bottom + 10,
+                                 width: view.width-20,
+                                 height: 20)
+        
     }
+    
+    private func checkForAction(){
+        
+        guard let loggedInUserId = UserDefaults.standard.value(forKey: "userId") as? String else {
+            return
+        }
+        
+        guard let follower = user?.followers.filter({
+            return $0 == loggedInUserId
+        }) else {
+            return
+        }
+        
+        let followerExists = !follower.isEmpty
 
+        if followerExists{
+            actionButton.setTitle("Unfollow", for: .normal)
+            return
+        }
+
+        actionButton.setTitle("Follow", for: .normal)
+        
+    }
+    
 }

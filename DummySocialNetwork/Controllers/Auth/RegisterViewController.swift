@@ -133,6 +133,7 @@ final class RegisterViewController: UIViewController {
                 switch result {
                 case .success(let response):
                     AuthManager.shared.cacheToken(token: response.access_token)
+                    UserDefaults.standard.setValue(response.user._id, forKey: "userId")
                     let vc = TabViewController()
                     vc.modalPresentationStyle = .fullScreen
                     self?.present(vc, animated: true)

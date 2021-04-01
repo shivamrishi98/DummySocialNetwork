@@ -11,6 +11,8 @@ struct ProfileViewModel {
     let name:String
     let email:String
     let postsCount:Int
+    let followersCount:Int
+    let followingsCount:Int
     let profileImageUrl:URL?
     let dateCreated:String
 }

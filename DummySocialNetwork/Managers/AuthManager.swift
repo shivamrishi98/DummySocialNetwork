@@ -148,6 +148,7 @@ final class AuthManager {
     // Log Out
     public func signOut(completion:@escaping (Bool) -> Void) {
         UserDefaults.standard.setValue(nil, forKey: "access_token")
+        UserDefaults.standard.setValue(nil, forKey: "userId")
         completion(true)
     }
     

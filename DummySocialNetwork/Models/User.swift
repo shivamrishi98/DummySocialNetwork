@@ -16,6 +16,8 @@ struct User:Codable {
     let name:String
     let email:String
     let posts:[String]
+    let followers:[String]
+    let following:[FollowingTo]
     let profilePictureUrl:String?
     let createdDate:String
 }
@@ -41,4 +43,12 @@ struct UploadProfilePictureResponse:Codable {
     let imageUrl:String?
 }
 
+struct FollowingTo:Codable {
+    let _id:String
+    let id:String
+    let isFollow:Bool
+}
 
+struct FollowUnfollowResponse:Codable {
+    let message:String
+}

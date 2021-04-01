@@ -115,6 +115,7 @@ final class LoginViewController: UIViewController {
                 switch result {
                 case .success(let response):
                     AuthManager.shared.cacheToken(token: response.access_token)
+                    UserDefaults.standard.setValue(response.userId, forKey: "userId")
                     let vc = TabViewController()
                     vc.modalPresentationStyle = .fullScreen
                     self?.present(vc, animated: true)

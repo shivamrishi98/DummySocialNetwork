@@ -21,6 +21,7 @@ struct RegisterRequest {
 struct LoginResponse:Codable {
     let message:String
     let access_token:String
+    let userId:String
 }
 
 struct SignUpResponse:Codable {

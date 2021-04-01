@@ -210,6 +210,64 @@ final class ApiManager {
         }
     }
     
+    // MARK: - Follow/Unfollow
+    
+    // Follow user with other user id
+    public func followUser(with userId:String,completion: @escaping (Bool)-> Void) {
+        createRequest(with: URL(string: Constants.baseUrl + "/users/follow?userId=\(userId)"),
+                      type: .POST) { request in
+            let task = URLSession.shared.dataTask(with: request) { data, _, error in
+                guard let data = data, error == nil else {
+                    completion(false)
+                    return
+                }
+               
+                do {
+                    let result = try JSONDecoder().decode(FollowUnfollowResponse.self,
+                                                          from: data)
+                    if result.message.contains("Success") {
+                        completion(true)
+                        return
+                    }
+                    completion(false)
+                    
+                } catch {
+                    completion(false)
+                }
+                
+            }
+            task.resume()
+        }
+    }
+    
+    // Unfollow user with other user id
+    public func unfollowUser(with userId:String,completion: @escaping (Bool)-> Void) {
+        createRequest(with: URL(string: Constants.baseUrl + "/users/unfollow?userId=\(userId)"),
+                      type: .POST) { request in
+            let task = URLSession.shared.dataTask(with: request) { data, _, error in
+                guard let data = data, error == nil else {
+                    completion(false)
+                    return
+                }
+               
+                do {
+                    let result = try JSONDecoder().decode(FollowUnfollowResponse.self,
+                                                          from: data)
+                    if result.message.contains("Success") {
+                        completion(true)
+                        return
+                    }
+                    completion(false)
+                    
+                } catch {
+                    completion(false)
+                }
+                
+            }
+            task.resume()
+        }
+    }
+    
     // MARK: - Posts
     
     // Get My Posts
