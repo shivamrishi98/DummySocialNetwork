@@ -330,5 +330,26 @@ final class ApiManager {
         }
     }
     
+    // MARK: - Home Feed
+    
+    public func getHomeFeed(completion:@escaping ((Result<[Post],Error>)->Void)) {
+        createRequest(with: URL(string: Constants.baseUrl + "/home/"),
+                      type: .GET) { request in
+            let task = URLSession.shared.dataTask(with: request) { data, _, error in
+                guard let data = data, error == nil else {
+                    completion(.failure(ApiError.failedToGetData))
+                    return
+                }
+                do {
+                    let result = try JSONDecoder().decode(MyPostsResponse.self, from: data)
+                    completion(.success(result.posts))
+                } catch {
+                    completion(.failure(error))
+                }
+            }
+            task.resume()
+        }
+    }
+    
 }
 

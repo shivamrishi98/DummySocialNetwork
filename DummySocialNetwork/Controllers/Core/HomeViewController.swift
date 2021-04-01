@@ -47,14 +47,22 @@ final class HomeViewController: UIViewController {
         tableView.dataSource = self
         tableView.refreshControl = refreshControl
         refreshControl.addTarget(self, action: #selector(didPullToRefresh), for: .valueChanged)
-        fetchMyPosts()
+        fetchHomeFeed()
         
         observer = NotificationCenter.default.addObserver(
             forName: .didNotifyProfileUpdate,
             object: nil,
             queue: .main,
             using: { [weak self] _ in
-                self?.fetchMyPosts()
+                self?.fetchHomeFeed()
+            })
+        
+        observer = NotificationCenter.default.addObserver(
+            forName: .didNotifyFollowUnfollowUpdate,
+            object: nil,
+            queue: .main,
+            using: { [weak self] _ in
+                self?.fetchHomeFeed()
             })
         
         navigationItem.rightBarButtonItems = [
@@ -63,7 +71,6 @@ final class HomeViewController: UIViewController {
                             target: self,
                             action: #selector(didTapPost))
         ]
-
     }
     
     @objc private func didPullToRefresh() {
@@ -77,7 +84,7 @@ final class HomeViewController: UIViewController {
         vc.createPostCompletion = { [weak self] success in
             DispatchQueue.main.async {
                 if success {
-                    self?.fetchMyPosts()
+                    self?.fetchHomeFeed()
                 }
             }
         }
@@ -99,8 +106,22 @@ final class HomeViewController: UIViewController {
        
     }
 
-    private func fetchMyPosts() {
-        ApiManager.shared.getMyPosts { [weak self] result in
+//    private func fetchMyPosts() {
+//        ApiManager.shared.getMyPosts { [weak self] result in
+//            DispatchQueue.main.async {
+//                switch result {
+//                case .success(let posts):
+//                    self?.posts = posts
+//                    self?.configureUI()
+//                case .failure(let error):
+//                    print(error)
+//                }
+//            }
+//        }
+//    }
+    
+    private func fetchHomeFeed() {
+        ApiManager.shared.getHomeFeed { [weak self] result in
             DispatchQueue.main.async {
                 switch result {
                 case .success(let posts):
@@ -165,29 +186,49 @@ extension HomeViewController:UITableViewDelegate,UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle {
-        return .delete
+        
+        guard let userId = UserDefaults.standard.value(forKey: "userId") as? String else {
+            return .none
+        }
+        
+        let loggedInUserPost = posts[indexPath.row].userId == userId
+        
+        if loggedInUserPost {
+            return .delete
+        }
+        
+        return .none
     }
     
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         
-        if editingStyle == .delete {
-            tableView.beginUpdates()
-            let postId = posts[indexPath.row]._id
-            let deletedPost = posts.remove(at: indexPath.row)
-            tableView.deleteRows(at: [indexPath],
-                                 with: .left)
-            ApiManager.shared.deletePost(with: postId) { [weak self] success in
-                DispatchQueue.main.async {
-                    if !success {
-                        // add model and row back and show error alert
-                        self?.posts.insert(deletedPost, at: indexPath.row)
-                        tableView.insertRows(at: [indexPath],
-                                             with: .left)
+        guard let userId = UserDefaults.standard.value(forKey: "userId") as? String else {
+            return
+        }
+        
+        let loggedInUserPost = posts[indexPath.row].userId == userId
+        
+        if loggedInUserPost {
+            
+            if editingStyle == .delete {
+                tableView.beginUpdates()
+                let postId = posts[indexPath.row]._id
+                let deletedPost = posts.remove(at: indexPath.row)
+                tableView.deleteRows(at: [indexPath],
+                                     with: .left)
+                ApiManager.shared.deletePost(with: postId) { [weak self] success in
+                    DispatchQueue.main.async {
+                        if !success {
+                            // add model and row back and show error alert
+                            self?.posts.insert(deletedPost, at: indexPath.row)
+                            tableView.insertRows(at: [indexPath],
+                                                 with: .left)
+                        }
+                        self?.configureUI()
                     }
-                    self?.configureUI()
                 }
+                tableView.endUpdates()
             }
-            tableView.endUpdates()
         }
     }
 }
