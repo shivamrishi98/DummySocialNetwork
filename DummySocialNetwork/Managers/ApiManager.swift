@@ -399,5 +399,29 @@ final class ApiManager {
         }
     }
     
+    // MARK: - Recommendations
+    
+    public func getRecommendedUsers(completion: @escaping (Result<[User],Error>) -> Void) {
+        createRequest(with: URL(string: Constants.baseUrl + "/recommendations/users"),
+                      type: .GET) { request in
+            let task = URLSession.shared.dataTask(with: request) { data, _, error in
+                guard let data = data, error == nil else {
+                    completion(.failure(ApiError.failedToGetData))
+                    return
+                }
+                
+                do {
+                    let results = try JSONDecoder().decode(SearchUsersResult.self,
+                                                           from: data)
+                    completion(.success(results.users))
+                } catch {
+                    completion(.failure(error))
+                }
+                
+            }
+            task.resume()
+        }
+    }
+    
 }
 

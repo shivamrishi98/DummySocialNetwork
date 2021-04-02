@@ -75,7 +75,7 @@ final class HomeViewController: UIViewController {
     
     @objc private func didPullToRefresh() {
         DispatchQueue.main.async { [weak self] in
-            self?.refreshControl.endRefreshing()
+            self?.fetchHomeFeed()
         }
     }
     
@@ -130,6 +130,7 @@ final class HomeViewController: UIViewController {
                 case .failure(let error):
                     print(error)
                 }
+                self?.refreshControl.endRefreshing()
             }
         }
     }

@@ -113,6 +113,7 @@ class ListUsersViewController: UIViewController {
                 }
             }
         }
+    
         
     }
     
@@ -141,9 +142,22 @@ extension ListUsersViewController:UITableViewDelegate,UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
+        
+        guard let userId = UserDefaults.standard.value(forKey: "userId") as? String else {
+            return
+        }
+        
         let user = users[indexPath.row]
-        let vc = ProfileViewController(user: user)
-        navigationController?.pushViewController(vc, animated: true)
+        
+        let loggedInUser = users[indexPath.row]._id == userId
+        
+        if loggedInUser {
+            let vc = ProfileViewController(isOwner: true,user: user)
+            navigationController?.pushViewController(vc, animated: true)
+        } else {
+            let vc = ProfileViewController(user: user)
+            navigationController?.pushViewController(vc, animated: true)
+        }
     }
     
 }
