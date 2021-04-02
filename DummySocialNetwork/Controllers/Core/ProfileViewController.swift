@@ -110,6 +110,15 @@ final class ProfileViewController: UIViewController {
         return button
     }()
     
+    private let lockImageView:UIImageView = {
+        let imageView = UIImageView()
+        imageView.isHidden = true
+        imageView.image = UIImage(systemName: "lock.circle")
+        imageView.tintColor = .label
+        imageView.contentMode = .scaleAspectFill
+        return imageView
+    }()
+    
     private var observer:NSObjectProtocol?
     
     override func viewDidLoad() {
@@ -126,7 +135,7 @@ final class ProfileViewController: UIViewController {
         view.addSubview(actionButton)
         view.addSubview(showFollowersListButton)
         view.addSubview(showFollowingsListButton)
-        
+        view.addSubview(lockImageView)
         profileImageView.layer.cornerRadius = 75
         
         if isOwner {
@@ -162,21 +171,21 @@ final class ProfileViewController: UIViewController {
             guard let user = user else {
                 return
             }
-            
             let viewModel = ProfileViewModel(
                 name: user.name,
-                email: user.email,
-                postsCount: user.posts.count,
-                followersCount: user.followers.count,
-                followingsCount: user.following.count,
+                email: user.email ?? "",
+                postsCount: user.posts?.count ?? 0,
+                followersCount: user.followers?.count ?? 0,
+                followingsCount: user.following?.count ?? 0,
                 profileImageUrl: URL(string: user.profilePictureUrl ?? ""),
-                dateCreated: user.createdDate)
+                dateCreated: user.createdDate ?? "")
             
             DispatchQueue.main.async { [weak self] in
                 self?.configure(with: viewModel)
             }
             actionButton.isHidden = false
             checkForAction()
+            checkForPrivateAccount()
         }
         
         actionButton.addTarget(self,
@@ -272,12 +281,12 @@ final class ProfileViewController: UIViewController {
                         with:
                             ProfileViewModel(
                                 name: user.name,
-                                email: user.email,
-                                postsCount: user.posts.count,
-                                followersCount: user.followers.count,
-                                followingsCount: user.following.count,
+                                email: user.email ?? "",
+                                postsCount: user.posts?.count ?? 0,
+                                followersCount: user.followers?.count ?? 0,
+                                followingsCount: user.following?.count ?? 0,
                                 profileImageUrl:URL(string: user.profilePictureUrl ?? ""),
-                                dateCreated: user.createdDate))
+                                dateCreated: user.createdDate ?? ""))
                 case .failure(let error):
                     print(error)
                 }
@@ -291,16 +300,17 @@ final class ProfileViewController: UIViewController {
                 switch result {
                 case .success(let user):
                     self?.user = user
+                    self?.checkForPrivateAccount()
                     self?.configure(
                         with:
                             ProfileViewModel(
                                 name: user.name,
-                                email: user.email,
-                                postsCount: user.posts.count,
-                                followersCount: user.followers.count,
-                                followingsCount: user.following.count,
+                                email: user.email ?? "",
+                                postsCount: user.posts?.count ?? 0,
+                                followersCount: user.followers?.count ?? 0,
+                                followingsCount: user.following?.count ?? 0,
                                 profileImageUrl: URL(string: user.profilePictureUrl ?? ""),
-                                dateCreated: user.createdDate))
+                                dateCreated: user.createdDate ?? ""))
                 case .failure(let error):
                     print(error)
                 }
@@ -374,6 +384,11 @@ final class ProfileViewController: UIViewController {
                                  width: view.width-20,
                                  height: 20)
         
+        lockImageView.frame = CGRect(x: view.width/2-50,
+                                     y: view.height/2 + 100,
+                                     width: 100,
+                                     height: 100)
+        
     }
     
     private func checkForAction(){
@@ -382,7 +397,7 @@ final class ProfileViewController: UIViewController {
             return
         }
         
-        guard let follower = user?.followers.filter({
+        guard let follower = user?.followers?.filter({
             return $0 == loggedInUserId
         }) else {
             return
@@ -398,5 +413,43 @@ final class ProfileViewController: UIViewController {
         actionButton.setTitle("Follow", for: .normal)
         
     }
+    
+    private func checkForPrivateAccount() {
+        
+        guard let user = user else {
+            return
+        }
+        
+        guard let loggedInUserId = UserDefaults.standard.value(forKey: "userId") as? String else {
+            return
+        }
+        
+        let notAFollower = user.followers?.filter({
+            return $0 == loggedInUserId
+       }).isEmpty ?? true
+        
+        if user.isPrivate && notAFollower {
+            emailLabel.isHidden = true
+            postsCountLabel.isHidden = true
+            followersCountLabel.isHidden = true
+            followingCountLabel.isHidden = true
+            accountCreatedDateLabel.isHidden = true
+            showFollowersListButton.isHidden = true
+            showFollowingsListButton.isHidden = true
+            lockImageView.isHidden = false
+        } else {
+            emailLabel.isHidden = false
+            postsCountLabel.isHidden = false
+            followersCountLabel.isHidden = false
+            followingCountLabel.isHidden = false
+            accountCreatedDateLabel.isHidden = false
+            showFollowersListButton.isHidden = false
+            showFollowingsListButton.isHidden = false
+            lockImageView.isHidden = true
+        }
+        
+        
+    }
+    
     
 }

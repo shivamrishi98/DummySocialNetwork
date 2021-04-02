@@ -166,12 +166,14 @@ final class ApiManager {
     
     // Update User Profile
     public func updateUserProfile(request requestData:UpdateUserProfileRequest,completion: @escaping (Bool) -> Void) {
+        
         createRequest(with: URL(string: Constants.baseUrl + "/users/profile"),
                       type: .PUT) { baseRequest in
             var request = baseRequest
-            let json:[String:String] = [
+            let json:[String:Any] = [
                 "name":requestData.name,
-                "email":requestData.email
+                "email":requestData.email,
+                "isPrivate":requestData.isPrivate
             ]
             request.httpBody = try? JSONSerialization.data(withJSONObject: json,
                                                            options: .fragmentsAllowed)

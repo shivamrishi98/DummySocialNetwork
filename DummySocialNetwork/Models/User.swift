@@ -14,17 +14,19 @@ struct UserResponse:Codable {
 struct User:Codable {
     let _id:String
     let name:String
-    let email:String
-    let posts:[String]
-    let followers:[String]
-    let following:[String]
+    let email:String?
+    let posts:[String]?
+    let followers:[String]?
+    let following:[String]?
     let profilePictureUrl:String?
-    let createdDate:String
+    let isPrivate:Bool
+    let createdDate:String?
 }
 
 struct UpdateUserProfileRequest:Codable {
     let name:String
     let email:String
+    let isPrivate:Bool
     let profilePictureUrl:String
     
 }

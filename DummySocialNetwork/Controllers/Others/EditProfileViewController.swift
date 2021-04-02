@@ -71,6 +71,20 @@ class EditProfileViewController: UIViewController {
         layer.cornerRadius = 12
         return textfield
     }()
+    
+    private let label:UILabel = {
+        let label = UILabel()
+        label.text = "Private Account:"
+        label.textColor = .label
+        label.textAlignment = .left
+        label.font = .systemFont(ofSize: 22, weight: .semibold)
+        return label
+    }()
+    
+    private let privateAccountSwitch:UISwitch =  {
+        let `switch` = UISwitch()
+        return `switch`
+    }()
         
     
     init(user:User) {
@@ -90,6 +104,8 @@ class EditProfileViewController: UIViewController {
         scrollView.addSubview(profileImageView)
         scrollView.addSubview(nameTextfield)
         scrollView.addSubview(emailTextfield)
+        scrollView.addSubview(label)
+        scrollView.addSubview(privateAccountSwitch)
         
         scrollView.contentSize = CGSize(width: view.width,
                                         height: view.height)
@@ -123,6 +139,7 @@ class EditProfileViewController: UIViewController {
         DispatchQueue.main.async { [weak self] in
             self?.nameTextfield.text = user.name
             self?.emailTextfield.text = user.email
+            self?.privateAccountSwitch.isOn = user.isPrivate
             self?.profileImageView.sd_setImage(
                 with: URL(string: user.profilePictureUrl ?? ""),
                 placeholderImage: UIImage(systemName: "person"),
@@ -150,13 +167,23 @@ class EditProfileViewController: UIViewController {
         
         nameTextfield.frame = CGRect(x: 50,
                                      y: profileImageView.bottom + 50,
-                                      width: view.width-100,
-                                      height: 44)
+                                     width: view.width-100,
+                                     height: 44)
         
         emailTextfield.frame = CGRect(x: 50,
                                       y: nameTextfield.bottom + 20,
                                       width: view.width-100,
                                       height: 44)
+        
+        label.frame = CGRect(x: 50,
+                             y: emailTextfield.bottom + 20,
+                             width: 180,
+                             height: 30)
+        
+        privateAccountSwitch.frame = CGRect(x: label.right + 10,
+                                            y: emailTextfield.bottom + 20,
+                                            width: 100,
+                                            height: 44)
         
     }
     
@@ -166,9 +193,10 @@ class EditProfileViewController: UIViewController {
               let email = emailTextfield.text else {
             return
         }
-        
+        let isPrivate = privateAccountSwitch.isOn
         let request = UpdateUserProfileRequest(name: name,
                                                email: email,
+                                               isPrivate: isPrivate,
                                                profilePictureUrl:user.profilePictureUrl ?? "")
         
         if let profilePictureRequest = self.profilePictureRequest {
@@ -180,6 +208,7 @@ class EditProfileViewController: UIViewController {
                         let newRequest = UpdateUserProfileRequest(
                             name: name,
                             email: email,
+                            isPrivate: isPrivate,
                             profilePictureUrl:response.imageUrl ?? "")
                         
                         ApiManager.shared.updateUserProfile(request: newRequest) { success in
