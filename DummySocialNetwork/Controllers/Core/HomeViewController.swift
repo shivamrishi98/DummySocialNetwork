@@ -121,6 +121,7 @@ final class HomeViewController: UIViewController {
 //    }
     
     private func fetchHomeFeed() {
+        posts.removeAll()
         ApiManager.shared.getHomeFeed { [weak self] result in
             DispatchQueue.main.async {
                 switch result {
@@ -145,8 +146,8 @@ final class HomeViewController: UIViewController {
         } else {
             noPostsLabel.isHidden = true
             tableView.isHidden = false
-            tableView.reloadData()
         }
+        tableView.reloadData()
     }
     
     
@@ -163,6 +164,7 @@ extension HomeViewController:UITableViewDelegate,UITableViewDataSource {
                                                        for: indexPath) as? PostTableViewCell else {
             return UITableViewCell()
         }
+
         let model = posts[indexPath.row]
         let viewModel = PostViewModel(content: model.content,
                                       name: model.name,
