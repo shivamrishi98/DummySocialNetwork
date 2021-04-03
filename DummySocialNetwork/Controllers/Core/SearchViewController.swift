@@ -10,7 +10,7 @@ import UIKit
 class SearchViewController: UIViewController {
     
     private var users = [User]()
-    private var sections = ["Recommended Users"]
+    private var sections = [String]()
     
     private let searchController:UISearchController = {
         let searchController = UISearchController(
@@ -107,7 +107,6 @@ class SearchViewController: UIViewController {
         collectionView.refreshControl = refreshControl
         refreshControl.addTarget(self, action: #selector(didPullToRefresh), for: .valueChanged)
         fetchData()
-        
     }
     
     @objc private func didPullToRefresh() {
@@ -125,18 +124,20 @@ class SearchViewController: UIViewController {
     }
     
     private func fetchData() {
-        
+       
         let group = DispatchGroup()
         group.enter()
-        
+       
         ApiManager.shared.getRecommendedUsers { [weak self] result in
             defer {
                 group.leave()
             }
             DispatchQueue.main.async {
+                self?.sections.removeAll()
                 switch result {
                 case .success(let users):
                     self?.users = users
+                    self?.configureSections()
                 case .failure(let error):
                     print(error)
                 }
@@ -148,6 +149,12 @@ class SearchViewController: UIViewController {
             self?.refreshControl.endRefreshing()
         }
         
+    }
+    
+    private func configureSections() {
+        if !users.isEmpty {
+            sections.append("Recommended Users")
+        }
     }
     
 }
