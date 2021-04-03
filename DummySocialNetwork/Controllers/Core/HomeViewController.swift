@@ -150,7 +150,6 @@ final class HomeViewController: UIViewController {
         tableView.reloadData()
     }
     
-    
 }
 
 extension HomeViewController:UITableViewDelegate,UITableViewDataSource {
@@ -164,10 +163,11 @@ extension HomeViewController:UITableViewDelegate,UITableViewDataSource {
                                                        for: indexPath) as? PostTableViewCell else {
             return UITableViewCell()
         }
-
+        cell.delegate = self
         let model = posts[indexPath.row]
         let viewModel = PostViewModel(content: model.content,
                                       name: model.name,
+                                      likes: model.likes,
                                       profilePictureUrl: URL(string: model.profilePictureUrl ?? ""),
                                       createdDate: String.formattedDate(
                                         string: model.createdDate,
@@ -177,7 +177,7 @@ extension HomeViewController:UITableViewDelegate,UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 70
+        return 100
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -236,3 +236,41 @@ extension HomeViewController:UITableViewDelegate,UITableViewDataSource {
     }
 }
 
+extension HomeViewController:PostTableViewCellDelegate {
+    
+    func postTableViewCell(_ cell: PostTableViewCell, didTaplikeUnlikeButton button: UIButton) {
+        
+        guard let indexpath = tableView.indexPath(for: cell) else {
+            return
+        }
+        
+        let post = posts[indexpath.row]
+        
+        if button.accessibilityIdentifier == "hand.thumbsup" {
+            
+            ApiManager.shared.likePost(with: post._id) { [weak self] success in
+                DispatchQueue.main.async {
+                    if success {
+                        button.setImage(UIImage(systemName: "hand.thumbsup.fill"),
+                                        for: .normal)
+                        button.accessibilityIdentifier = "hand.thumbsup.fill"
+                        self?.fetchHomeFeed()
+                    }
+                }
+            }
+            
+        } else {
+            ApiManager.shared.unlikePost(with: post._id) { [weak self] success in
+                DispatchQueue.main.async {
+                    if success {
+                        button.setImage(UIImage(systemName: "hand.thumbsup"),
+                                        for: .normal)
+                        button.accessibilityIdentifier = "hand.thumbsup"
+                        self?.fetchHomeFeed()
+                    }
+                }
+            }
+        }
+        
+    }
+}

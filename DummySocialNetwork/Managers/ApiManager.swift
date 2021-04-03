@@ -378,6 +378,66 @@ final class ApiManager {
         }
     }
     
+    
+    // MARK: - Like/Unlike
+    
+    // Like post with postId
+    public func likePost(with postId:String,completion: @escaping (Bool)-> Void) {
+        createRequest(with: URL(string: Constants.baseUrl + "/posts/like?postId=\(postId)"),
+                      type: .POST) { request in
+            let task = URLSession.shared.dataTask(with: request) { data, _, error in
+                guard let data = data, error == nil else {
+                    completion(false)
+                    return
+                }
+               
+                do {
+                    let result = try JSONDecoder().decode(LikeUnlikeResponse.self,
+                                                          from: data)
+                    if result.message.contains("Success") {
+                        completion(true)
+                        return
+                    }
+                    completion(false)
+                    
+                } catch {
+                    completion(false)
+                }
+                
+            }
+            task.resume()
+        }
+    }
+    
+    // Unlike post with postId
+    public func unlikePost(with postId:String,completion: @escaping (Bool)-> Void) {
+        createRequest(with: URL(string: Constants.baseUrl + "/posts/unlike?postId=\(postId)"),
+                      type: .POST) { request in
+            let task = URLSession.shared.dataTask(with: request) { data, _, error in
+                guard let data = data, error == nil else {
+                    completion(false)
+                    return
+                }
+               
+                do {
+                    let result = try JSONDecoder().decode(LikeUnlikeResponse.self,
+                                                          from: data)
+                    if result.message.contains("Success") {
+                        completion(true)
+                        return
+                    }
+                    completion(false)
+                    
+                } catch {
+                    completion(false)
+                }
+                
+            }
+            task.resume()
+        }
+    }
+    
+    
     // MARK: - Home Feed
     
     public func getHomeFeed(completion:@escaping ((Result<[Post],Error>)->Void)) {

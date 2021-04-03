@@ -16,11 +16,16 @@ struct Post:Codable {
     let content:String
     let userId:String
     let name:String
+    let likes:[String]
     let profilePictureUrl:String?
     let createdDate:String
 }
 
 struct CreatePostRequest:Codable {
     let content:String
+}
+
+struct LikeUnlikeResponse:Codable {
+    let message:String
 }
 
