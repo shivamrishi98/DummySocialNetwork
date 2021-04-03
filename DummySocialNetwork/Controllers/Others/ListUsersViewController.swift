@@ -81,13 +81,13 @@ class ListUsersViewController: UIViewController {
         } else {
             noDataFoundLabel.isHidden = true
             tableView.isHidden = false
-            tableView.reloadData()
         }
+        tableView.reloadData()
         
     }
     
     private func fetchData() {
-        
+        users.removeAll()
         if isFollowing {
             ApiManager.shared.getFollowings(with: userId) { [weak self] result in
                 DispatchQueue.main.async {
