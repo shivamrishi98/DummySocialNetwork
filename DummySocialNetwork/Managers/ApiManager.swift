@@ -437,6 +437,26 @@ final class ApiManager {
         }
     }
     
+    // Get users who liked your post
+
+    public func getLikedUsers(with postId:String,completion:@escaping ((Result<[User],Error>)->Void)) {
+        createRequest(with: URL(string: Constants.baseUrl + "/posts/likedUsers?postId=\(postId)"),
+                      type: .GET) { request in
+            let task = URLSession.shared.dataTask(with: request) { data, _, error in
+                guard let data = data, error == nil else {
+                    completion(.failure(ApiError.failedToGetData))
+                    return
+                }
+                do {
+                    let result = try JSONDecoder().decode(LikedUsersResponse.self, from: data)
+                    completion(.success(result.users))
+                } catch {
+                    completion(.failure(error))
+                }
+            }
+            task.resume()
+        }
+    }
     
     // MARK: - Home Feed
     

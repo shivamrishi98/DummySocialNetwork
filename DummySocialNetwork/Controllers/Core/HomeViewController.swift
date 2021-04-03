@@ -271,6 +271,17 @@ extension HomeViewController:PostTableViewCellDelegate {
                 }
             }
         }
-        
     }
+    
+    func postTableViewCell(_ cell: PostTableViewCell, didTaplikeCountLabel label: UILabel) {
+        
+        guard let indexpath = tableView.indexPath(for: cell) else {
+            return
+        }
+        
+        let post = posts[indexpath.row]
+        let vc = ListUsersViewController(vcTitle: "Likes", isPostLikes: true,id: post._id)
+        navigationController?.pushViewController(vc, animated: true)
+    }
+    
 }

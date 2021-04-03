@@ -10,6 +10,7 @@ import SDWebImage
 
 protocol PostTableViewCellDelegate:AnyObject {
     func postTableViewCell(_ cell:PostTableViewCell,didTaplikeUnlikeButton button:UIButton)
+    func postTableViewCell(_ cell:PostTableViewCell,didTaplikeCountLabel label:UILabel)
 }
 
 class PostTableViewCell: UITableViewCell {
@@ -65,6 +66,7 @@ class PostTableViewCell: UITableViewCell {
     private let likeCountLabel:UILabel = {
         let label = UILabel()
         label.textColor = .label
+        label.isUserInteractionEnabled = true
         label.font = .systemFont(ofSize: 16, weight: .semibold)
         label.isHidden = true
         return label
@@ -85,6 +87,15 @@ class PostTableViewCell: UITableViewCell {
         likeUnlikeButton.addTarget(self,
                                    action: #selector(didTaplikeUnlikeButton(_:)),
                                    for: .touchUpInside)
+        
+        let gesture = UITapGestureRecognizer(target: self,
+                                             action: #selector(didTaplikeCountLabel(_:)))
+        likeCountLabel.addGestureRecognizer(gesture)
+    }
+    
+    @objc private func didTaplikeCountLabel(_ sender:UILabel) {
+        delegate?.postTableViewCell(self,
+                                    didTaplikeCountLabel: sender)
     }
     
     @objc private func didTaplikeUnlikeButton(_ sender:UIButton) {

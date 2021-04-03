@@ -205,7 +205,7 @@ final class ProfileViewController: UIViewController {
             return
         }
         let vc = ListUsersViewController(vcTitle: "Followers",
-                                         userId: user._id)
+                                         id: user._id)
         navigationController?.pushViewController(vc, animated: true)
     }
     
@@ -215,7 +215,7 @@ final class ProfileViewController: UIViewController {
         }
         let vc = ListUsersViewController(vcTitle: "Followings",
                                          isFollowing: true,
-                                         userId: user._id)
+                                         id: user._id)
         navigationController?.pushViewController(vc, animated: true)
     }
     

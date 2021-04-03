@@ -29,3 +29,6 @@ struct LikeUnlikeResponse:Codable {
     let message:String
 }
 
+struct LikedUsersResponse:Codable {
+    let users:[User]
+}

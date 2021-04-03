@@ -11,7 +11,8 @@ class ListUsersViewController: UIViewController {
 
     private let vcTitle:String
     private let isFollowing:Bool
-    private let userId:String
+    private let isPostLikes:Bool
+    private let id:String
     private var users = [User]()
 
      private let tableView:UITableView = {
@@ -32,10 +33,14 @@ class ListUsersViewController: UIViewController {
     }()
    
     
-    init(vcTitle:String,isFollowing:Bool = false,userId:String) {
+    init(vcTitle:String,
+         isFollowing:Bool = false,
+         isPostLikes:Bool = false,
+         id:String) {
         self.vcTitle = vcTitle
         self.isFollowing = isFollowing
-        self.userId = userId
+        self.isPostLikes = isPostLikes
+        self.id = id
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -88,8 +93,9 @@ class ListUsersViewController: UIViewController {
     
     private func fetchData() {
         users.removeAll()
-        if isFollowing {
-            ApiManager.shared.getFollowings(with: userId) { [weak self] result in
+        if isPostLikes {
+            
+            ApiManager.shared.getLikedUsers(with: id) { [weak self] result in
                 DispatchQueue.main.async {
                     switch result {
                     case .success(let users):
@@ -101,19 +107,33 @@ class ListUsersViewController: UIViewController {
                 }
             }
         } else {
-            ApiManager.shared.getFollowers(with: userId) { [weak self] result in
-                DispatchQueue.main.async {
-                    switch result {
-                    case .success(let users):
-                        self?.users = users
-                        self?.configureUI()
-                    case .failure(let error):
-                        print(error)
+            
+            if isFollowing {
+                ApiManager.shared.getFollowings(with: id) { [weak self] result in
+                    DispatchQueue.main.async {
+                        switch result {
+                        case .success(let users):
+                            self?.users = users
+                            self?.configureUI()
+                        case .failure(let error):
+                            print(error)
+                        }
+                    }
+                }
+            } else {
+                ApiManager.shared.getFollowers(with: id) { [weak self] result in
+                    DispatchQueue.main.async {
+                        switch result {
+                        case .success(let users):
+                            self?.users = users
+                            self?.configureUI()
+                        case .failure(let error):
+                            print(error)
+                        }
                     }
                 }
             }
         }
-    
         
     }
     
