@@ -91,6 +91,58 @@ final class ApiManager {
         
     }
     
+    private func createMultipartFormRequestForPost(
+        with url:URL?,
+        type:HTTPMethod = .POST,
+        requestModel:CreatePostRequest,
+        completion: @escaping (URLRequest) -> Void) {
+        
+        guard let token = AuthManager.shared.accessToken else {
+            return
+        }
+        guard let apiUrl = url else {
+            return
+        }
+        var request = URLRequest(url: apiUrl)
+        request.setValue("\(token)",
+                         forHTTPHeaderField: "access_token")
+        request.httpMethod = type.rawValue
+        request.timeoutInterval = 30
+        
+        let boundary = "---------------------------\(UUID().uuidString)---------------------------"
+        
+        //Main Boundary
+        request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
+        
+        var requestData = Data()
+        
+        let lineBreak = "\r\n"
+      
+        
+        requestData.appendString(string: "--\(boundary + lineBreak)")
+        requestData.append("Content-Disposition: form-data; name=caption\(lineBreak + lineBreak)" .data(using: .utf8)!)
+        requestData.appendString(string:"\(requestModel.caption + lineBreak)")
+        
+        
+        //Attachment
+        requestData.appendString(string: "--\(boundary + lineBreak)")
+        requestData.appendString(string: "Content-Disposition: form-data; name=\"file\"; filename=\"\(requestModel.fileName)\"\(lineBreak);")
+        requestData.appendString(string: "Content-Type: \(requestModel.mimeType)\(lineBreak + lineBreak)")
+        requestData.append(requestModel.imageData)
+        requestData.appendString(string: "\(lineBreak + lineBreak)")
+        
+        //End of Main Boundary
+        requestData.append("--\(boundary)--\(lineBreak)" .data(using: .utf8)!)
+        
+        //Content-Length
+        request.addValue("\(requestData.count)", forHTTPHeaderField: "Content-Length")
+        
+        request.httpBody = requestData
+        
+        completion(request)
+        
+    }
+    
     
     
     // MARK: - User
@@ -340,27 +392,26 @@ final class ApiManager {
     
     
     // Create Post
-    public func createPost(request requestData:CreatePostRequest,completion: @escaping (Bool)-> Void) {
-        createRequest(with: URL(string: Constants.baseUrl + "/posts/create"),
-                      type: .POST) { baseRequest in
-            var request = baseRequest
-            let json:[String:String] = [
-                "content":requestData.content
-            ]
-            request.httpBody = try? JSONSerialization.data(withJSONObject: json,
-                                                           options: .fragmentsAllowed)
+    public func createPost(request requestModel:CreatePostRequest,completion: @escaping (Bool)-> Void) {
+        createMultipartFormRequestForPost(with: URL(string: Constants.baseUrl + "/posts/create"),
+                                   requestModel: requestModel) { request in
             let task = URLSession.shared.dataTask(with: request) { data, _, error in
-                guard let _ = data, error == nil else {
+                guard let data = data, error == nil else {
                     completion(false)
                     return
                 }
-                
-                completion(true)
-                
+                do {
+                    let _ = try JSONDecoder().decode(CreatePostResponse.self,
+                                                        from: data)
+                    completion(true)
+                } catch {
+                    print(error)
+                    completion(false)
+                }
             }
-            
             task.resume()
         }
+        
     }
     
     // Delete post by id

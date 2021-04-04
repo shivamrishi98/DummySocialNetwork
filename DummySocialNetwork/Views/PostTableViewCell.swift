@@ -30,6 +30,14 @@ class PostTableViewCell: UITableViewCell {
         return imageView
     }()
     
+    private let postImageView:UIImageView = {
+        let imageView = UIImageView()
+        imageView.tintColor = .label
+        imageView.contentMode = .scaleAspectFill
+        imageView.clipsToBounds = true
+        return imageView
+    }()
+    
     private let nameLabel:UILabel = {
         let label = UILabel()
         label.textColor = .label
@@ -38,7 +46,7 @@ class PostTableViewCell: UITableViewCell {
         return label
     }()
     
-    private let contentLabel:UILabel = {
+    private let captionLabel:UILabel = {
         let label = UILabel()
         label.textColor = .label
         label.font = .systemFont(ofSize: 18)
@@ -76,8 +84,9 @@ class PostTableViewCell: UITableViewCell {
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         contentView.addSubview(profileImageView)
+        contentView.addSubview(postImageView)
         contentView.addSubview(dateCreatedLabel)
-        contentView.addSubview(contentLabel)
+        contentView.addSubview(captionLabel)
         contentView.addSubview(nameLabel)
         contentView.addSubview(likeUnlikeButton)
         contentView.addSubview(likeCountLabel)
@@ -125,18 +134,23 @@ class PostTableViewCell: UITableViewCell {
                                         width: frame.width-profileImageView.width-nameLabel.width-40,
                                         height: 25)
         
-        contentLabel.frame = CGRect(x: 40,
-                                    y: profileImageView.bottom,
-                                    width: frame.width-50,
-                                    height: frame.height-profileImageView.height-35)
+        postImageView.frame = CGRect(x: 0,
+                                    y: profileImageView.bottom + 5,
+                                    width: frame.width,
+                                    height: 250)
         
-        likeUnlikeButton.frame = CGRect(x: 40,
-                                    y: contentLabel.bottom + 5,
+        captionLabel.frame = CGRect(x: 20,
+                                    y: postImageView.bottom,
+                                    width: frame.width-40,
+                                    height: frame.height-profileImageView.height-postImageView.height-45)
+        
+        likeUnlikeButton.frame = CGRect(x: 20,
+                                    y: captionLabel.bottom + 5,
                                     width: 20,
                                     height: 20)
         
         likeCountLabel.frame = CGRect(x: likeUnlikeButton.right + 10,
-                                    y: contentLabel.bottom + 5,
+                                    y: captionLabel.bottom + 5,
                                     width: width-likeUnlikeButton.width-20,
                                     height: 20)
     }
@@ -145,8 +159,9 @@ class PostTableViewCell: UITableViewCell {
         super.prepareForReuse()
         nameLabel.text = nil
         dateCreatedLabel.text = nil
-        contentLabel.text = nil
+        captionLabel.text = nil
         profileImageView.image = nil
+        postImageView.image = nil
         likeUnlikeButton.setImage(UIImage(systemName: "hand.thumbsup"),
                                   for: .normal)
         likeUnlikeButton.accessibilityIdentifier = "hand.thumbsup"
@@ -157,9 +172,12 @@ class PostTableViewCell: UITableViewCell {
                 
         nameLabel.text = viewModel.name
         dateCreatedLabel.text = viewModel.createdDate
-        contentLabel.text = viewModel.content
+        captionLabel.text = viewModel.caption
         profileImageView.sd_setImage(with: viewModel.profilePictureUrl,
                                      placeholderImage: UIImage(systemName: "person"),
+                                     completed: nil)
+        postImageView.sd_setImage(with: viewModel.contentUrl,
+                                     placeholderImage: UIImage(systemName: "photo"),
                                      completed: nil)
         
         let likesExist = viewModel.likes.isEmpty

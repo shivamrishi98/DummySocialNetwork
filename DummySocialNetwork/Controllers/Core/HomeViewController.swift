@@ -165,9 +165,10 @@ extension HomeViewController:UITableViewDelegate,UITableViewDataSource {
         }
         cell.delegate = self
         let model = posts[indexPath.row]
-        let viewModel = PostViewModel(content: model.content,
+        let viewModel = PostViewModel(caption: model.caption,
                                       name: model.name,
                                       likes: model.likes,
+                                      contentUrl: URL(string: model.contentUrl),
                                       profilePictureUrl: URL(string: model.profilePictureUrl ?? ""),
                                       createdDate: String.formattedDate(
                                         string: model.createdDate,
@@ -177,7 +178,7 @@ extension HomeViewController:UITableViewDelegate,UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 100
+        return 350
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {

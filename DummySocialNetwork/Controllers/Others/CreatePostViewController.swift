@@ -10,46 +10,81 @@ import UIKit
 class CreatePostViewController: UIViewController {
 
     var createPostCompletion:((Bool)->Void)?
+    private var imageRequestModel:ImageRequestModel?
     
-    private let contentTextView:UITextView = {
+    private let scrollView:UIScrollView = {
+        let scrollView = UIScrollView()
+        return scrollView
+    }()
+    
+    private let captionTextView:UITextView = {
         let textView = UITextView()
-        textView.text = "Placeholder..."
+        textView.isHidden = true
+        textView.text = "Write caption..."
         textView.textColor = .lightGray
         textView.font = .systemFont(ofSize: 18)
         let layer = textView.layer
         layer.borderWidth = 1
         layer.borderColor = UIColor.label.cgColor
         layer.masksToBounds = true
-        layer.cornerRadius = 12
+        layer.cornerRadius = 1
         return textView
+    }()
+    
+    private let imageView:UIImageView = {
+        let imageView = UIImageView()
+        imageView.isHidden = true
+        imageView.tintColor = .label
+        imageView.contentMode = .scaleAspectFill
+        imageView.clipsToBounds = true
+        return imageView
     }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         title = "Create Post"
         view.backgroundColor = .secondarySystemBackground
-        view.addSubview(contentTextView)
-        contentTextView.delegate = self
+        view.addSubview(scrollView)
+        scrollView.addSubview(imageView)
+        scrollView.addSubview(captionTextView)
+        captionTextView.delegate = self
+        
+        scrollView.contentSize = CGSize(width: view.width,
+                                        height: view.height)
         
         navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel,
                                                            target: self,
                                                            action: #selector(didTapCancel))
         
-        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Create",
+        
+        navigationItem.rightBarButtonItem = UIBarButtonItem(image:UIImage(systemName: "photo"),
                                                             style: .plain,
                                                             target: self,
-                                                            action: #selector(didTapCreate))
+                                                            action: #selector(didTapSelectPhoto))
+        
+    }
+    
+    @objc private func didTapSelectPhoto() {
+        let vc = UIImagePickerController()
+        vc.delegate = self
+        vc.allowsEditing = true
+        present(vc, animated: true)
     }
     
     @objc private func didTapCreate() {
         
-        guard let content = contentTextView.text,
-              !content.trimmingCharacters(in: .whitespaces).isEmpty,
-              content != "Placeholder..." else {
+        guard let caption = captionTextView.text,
+              !caption.trimmingCharacters(in: .whitespaces).isEmpty,
+              caption != "Write caption...",
+              let imageRequestModel = imageRequestModel else {
             return
         }
         
-        let request = CreatePostRequest(content: content)
+        let request = CreatePostRequest(caption: caption,
+                                        fileName: imageRequestModel.fileName,
+                                        mimeType: imageRequestModel.mimeType,
+                                        imageData: imageRequestModel.imageData)
+        
         ApiManager.shared.createPost(request: request) { [weak self] success in
             DispatchQueue.main.async {
                 if success {
@@ -68,10 +103,18 @@ class CreatePostViewController: UIViewController {
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
-        contentTextView.frame = CGRect(x: 10,
-                                       y: view.safeAreaInsets.top + 20,
+        scrollView.frame = view.bounds
+        
+        imageView.frame = CGRect(x: 10,
+                                       y: scrollView.top + 10,
                                        width: view.width-20,
-                                       height: view.height-view.safeAreaInsets.top-200)
+                                       height: view.height-view.safeAreaInsets.top-400)
+        
+        
+        captionTextView.frame = CGRect(x: 10,
+                                       y: imageView.bottom + 5,
+                                       width: view.width-20,
+                                       height: view.height-view.safeAreaInsets.top-imageView.height-60)
         
     }
 
@@ -88,3 +131,41 @@ extension CreatePostViewController:UITextViewDelegate {
     
     
 }
+
+extension CreatePostViewController:UINavigationControllerDelegate,UIImagePickerControllerDelegate {
+    
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        picker.dismiss(animated: true, completion: nil)
+    }
+    
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        picker.dismiss(animated: true, completion: nil)
+        
+        guard let image = info[.editedImage] as? UIImage,
+              let imageData = image.jpegData(compressionQuality: 1),
+              let imageUrl = info[.imageURL]as? URL,
+              let fileName = imageUrl.pathComponents.last else {
+            return
+        }
+        
+        imageView.isHidden = false
+        captionTextView.isHidden = false
+        navigationItem.rightBarButtonItem = nil
+        
+        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Create",
+                                                            style: .plain,
+                                                            target: self,
+                                                            action: #selector(didTapCreate))
+        
+        let mimeType = "image/\(imageUrl.pathExtension)"
+        imageView.image = image
+        
+        imageRequestModel = ImageRequestModel(fileName: fileName,
+                                            mimeType: mimeType,
+                                            imageData: imageData)
+        
+    }
+    
+}
+
+

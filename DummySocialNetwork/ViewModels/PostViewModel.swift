@@ -8,9 +8,10 @@
 import Foundation
 
 struct PostViewModel {
-    let content:String
+    let caption:String
     let name:String
     let likes:[String]
+    let contentUrl:URL?
     let profilePictureUrl:URL?
     let createdDate:String
 }
