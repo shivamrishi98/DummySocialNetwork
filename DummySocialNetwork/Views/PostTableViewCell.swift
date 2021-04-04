@@ -100,6 +100,8 @@ class PostTableViewCell: UITableViewCell {
         contentView.addSubview(likeUnlikeButton)
         contentView.addSubview(likeCountLabel)
         
+        selectionStyle = .none
+        
         profileImageView.layer.cornerRadius = 25/2
         
         moreButton.addTarget(self,
