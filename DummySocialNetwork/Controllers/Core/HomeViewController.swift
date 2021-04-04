@@ -188,57 +188,80 @@ extension HomeViewController:UITableViewDelegate,UITableViewDataSource {
     func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
         return UIView()
     }
-    
-    func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle {
-        
-        guard let userId = UserDefaults.standard.value(forKey: "userId") as? String else {
-            return .none
-        }
-        
-        let loggedInUserPost = posts[indexPath.row].userId == userId
-        
-        if loggedInUserPost {
-            return .delete
-        }
-        
-        return .none
-    }
-    
-    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-        
-        guard let userId = UserDefaults.standard.value(forKey: "userId") as? String else {
-            return
-        }
-        
-        let loggedInUserPost = posts[indexPath.row].userId == userId
-        
-        if loggedInUserPost {
-            
-            if editingStyle == .delete {
-                tableView.beginUpdates()
-                let postId = posts[indexPath.row]._id
-                let deletedPost = posts.remove(at: indexPath.row)
-                tableView.deleteRows(at: [indexPath],
-                                     with: .left)
-                ApiManager.shared.deletePost(with: postId) { [weak self] success in
-                    DispatchQueue.main.async {
-                        if !success {
-                            // add model and row back and show error alert
-                            self?.posts.insert(deletedPost, at: indexPath.row)
-                            tableView.insertRows(at: [indexPath],
-                                                 with: .left)
-                        }
-                        self?.configureUI()
-                    }
-                }
-                tableView.endUpdates()
-            }
-        }
-    }
+     
 }
 
 extension HomeViewController:PostTableViewCellDelegate {
     
+    func postTableViewCell(_ cell: PostTableViewCell, didTapMoreButton button: UIButton) {
+        
+        guard let userId = UserDefaults.standard.value(forKey: "userId") as? String,
+              let indexPath = tableView.indexPath(for: cell) else {
+            return
+        }
+
+        let loggedInUserPost = posts[indexPath.row].userId == userId
+        
+        
+    
+        let actionSheet = UIAlertController(title: "Post",
+                                            message: "Choose Option",
+                                            preferredStyle: .actionSheet)
+        
+        if loggedInUserPost
+        {
+            actionSheet.addAction(
+                UIAlertAction(
+                    title: "Delete post",
+                    style: .default,
+                    handler: { [weak self] _ in
+                        let alert = UIAlertController(
+                            title: "Delete Post",
+                            message: "Are you sure you want to delete this post ?",
+                            preferredStyle: .alert)
+                        
+                        alert.addAction(
+                            UIAlertAction(
+                                title: "Delete",
+                                style: .destructive, handler: { _ in
+                                    self?.deletePost(indexPath: indexPath)
+                                }))
+                        
+                        alert.addAction(
+                            UIAlertAction(
+                                title: "Cancel",
+                                style: .cancel, handler: nil))
+                        
+                        self?.present(alert, animated: true)
+                    }))
+            
+        }
+        actionSheet.addAction(UIAlertAction(title: "Cancel",
+                                            style: .cancel, handler: nil))
+        
+        present(actionSheet, animated: true)
+    }
+    
+    func deletePost(indexPath:IndexPath) {
+        tableView.beginUpdates()
+        let postId = posts[indexPath.row]._id
+        let deletedPost = posts.remove(at: indexPath.row)
+        tableView.deleteRows(at: [indexPath],
+                             with: .left)
+        ApiManager.shared.deletePost(with: postId) { [weak self] success in
+            DispatchQueue.main.async {
+                if !success {
+                    // add model and row back and show error alert
+                    self?.posts.insert(deletedPost, at: indexPath.row)
+                    self?.tableView.insertRows(at: [indexPath],
+                                         with: .left)
+                }
+                self?.configureUI()
+            }
+        }
+        tableView.endUpdates()
+    }
+
     func postTableViewCell(_ cell: PostTableViewCell, didTaplikeUnlikeButton button: UIButton) {
         
         guard let indexpath = tableView.indexPath(for: cell) else {

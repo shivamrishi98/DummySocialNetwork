@@ -11,6 +11,7 @@ import SDWebImage
 protocol PostTableViewCellDelegate:AnyObject {
     func postTableViewCell(_ cell:PostTableViewCell,didTaplikeUnlikeButton button:UIButton)
     func postTableViewCell(_ cell:PostTableViewCell,didTaplikeCountLabel label:UILabel)
+    func postTableViewCell(_ cell:PostTableViewCell,didTapMoreButton button:UIButton)
 }
 
 class PostTableViewCell: UITableViewCell {
@@ -62,6 +63,13 @@ class PostTableViewCell: UITableViewCell {
         return label
     }()
     
+    private let moreButton:UIButton = {
+        let button = UIButton(type: .system)
+        button.setImage(UIImage(systemName: "ellipsis"), for: .normal)
+        button.tintColor = .label
+        return button
+    }()
+    
     private let likeUnlikeButton:UIButton = {
         let button = UIButton(type: .system)
         let image = UIImage(systemName: "hand.thumbsup")
@@ -86,12 +94,17 @@ class PostTableViewCell: UITableViewCell {
         contentView.addSubview(profileImageView)
         contentView.addSubview(postImageView)
         contentView.addSubview(dateCreatedLabel)
+        contentView.addSubview(moreButton)
         contentView.addSubview(captionLabel)
         contentView.addSubview(nameLabel)
         contentView.addSubview(likeUnlikeButton)
         contentView.addSubview(likeCountLabel)
         
         profileImageView.layer.cornerRadius = 25/2
+        
+        moreButton.addTarget(self,
+                                   action: #selector(didTapMoreButton(_:)),
+                                   for: .touchUpInside)
         
         likeUnlikeButton.addTarget(self,
                                    action: #selector(didTaplikeUnlikeButton(_:)),
@@ -100,6 +113,11 @@ class PostTableViewCell: UITableViewCell {
         let gesture = UITapGestureRecognizer(target: self,
                                              action: #selector(didTaplikeCountLabel(_:)))
         likeCountLabel.addGestureRecognizer(gesture)
+    }
+    
+    @objc private func didTapMoreButton(_ sender:UIButton) {
+        delegate?.postTableViewCell(self,
+                                    didTapMoreButton: sender)
     }
     
     @objc private func didTaplikeCountLabel(_ sender:UILabel) {
@@ -131,7 +149,12 @@ class PostTableViewCell: UITableViewCell {
         
         dateCreatedLabel.frame = CGRect(x: nameLabel.right + 5,
                                         y: 5,
-                                        width: frame.width-profileImageView.width-nameLabel.width-40,
+                                        width: frame.width-profileImageView.width-nameLabel.width-60,
+                                        height: 25)
+        
+        moreButton.frame = CGRect(x: dateCreatedLabel.right + 5,
+                                        y: 5,
+                                        width:20,
                                         height: 25)
         
         postImageView.frame = CGRect(x: 0,
@@ -162,6 +185,8 @@ class PostTableViewCell: UITableViewCell {
         captionLabel.text = nil
         profileImageView.image = nil
         postImageView.image = nil
+        moreButton.setImage(UIImage(systemName: "ellipsis"),
+                                  for: .normal)
         likeUnlikeButton.setImage(UIImage(systemName: "hand.thumbsup"),
                                   for: .normal)
         likeUnlikeButton.accessibilityIdentifier = "hand.thumbsup"
