@@ -109,7 +109,6 @@ class PostTableViewCell: UITableViewCell {
         contentView.addSubview(likeUnlikeButton)
         contentView.addSubview(commentButton)
         contentView.addSubview(likeCountLabel)
-        
         selectionStyle = .none
         
         profileImageView.layer.cornerRadius = 25/2
@@ -186,7 +185,7 @@ class PostTableViewCell: UITableViewCell {
         captionLabel.frame = CGRect(x: 20,
                                     y: postImageView.bottom,
                                     width: frame.width-40,
-                                    height: frame.height-profileImageView.height-postImageView.height-45)
+                                    height: frame.height-profileImageView.height-postImageView.height-65)
         
         likeUnlikeButton.frame = CGRect(x: 20,
                                     y: captionLabel.bottom + 5,
@@ -220,7 +219,7 @@ class PostTableViewCell: UITableViewCell {
     }
     
     func configure(with viewModel:PostViewModel){
-                
+            
         nameLabel.text = viewModel.name
         dateCreatedLabel.text = viewModel.createdDate
         captionLabel.text = viewModel.caption
