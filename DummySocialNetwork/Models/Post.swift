@@ -47,3 +47,30 @@ struct CreatePostResponse:Codable {
     let message:String
     let post:Post
 }
+
+struct CreateCommentRequest:Codable {
+    let comment:String
+}
+
+struct CommentResponse:Codable {
+    let message:String
+}
+
+struct CommentsResponse:Codable {
+    let comments:[Comment]
+}
+
+struct Comment:Codable {
+    let _id:String
+    let postId:String
+    let comment:String
+    let createdDate:String
+    let commentedBy:CommentedBy
+}
+
+struct CommentedBy:Codable {
+    let userId:String
+    let name:String
+    let profilePictureUrl:String?
+}
+

@@ -509,6 +509,94 @@ final class ApiManager {
         }
     }
     
+    // MARK: - Comments
+    
+    // Comment on post with postId
+    public func commentOnPost(with postId:String,
+                              request requestModel:CreateCommentRequest,
+                              completion: @escaping (Bool)-> Void) {
+        createRequest(with: URL(string: Constants.baseUrl + "/posts/comment?postId=\(postId)"),
+                      type: .POST) { baseRequest in
+            var request = baseRequest
+            let json:[String:Any] = [
+                "comment":requestModel.comment
+            ]
+            request.httpBody = try? JSONSerialization.data(withJSONObject: json,
+                                                           options: .fragmentsAllowed)
+            let task = URLSession.shared.dataTask(with: request) { data, _, error in
+                guard let data = data, error == nil else {
+                    completion(false)
+                    return
+                }
+               
+                do {
+                    let result = try JSONDecoder().decode(CommentResponse.self,
+                                                          from: data)
+                    if result.message.contains("Success") {
+                        completion(true)
+                        return
+                    }
+                    completion(false)
+                    
+                } catch {
+                    completion(false)
+                }
+                
+            }
+            task.resume()
+        }
+    }
+    
+    
+    // Delete comment with postId and commentId
+    public func deleteComment(with postId:String,commentId:String,completion: @escaping (Bool)-> Void) {
+        createRequest(
+            with: URL(string: Constants.baseUrl + "/posts/deleteComment?postId=\(postId)&commentId=\(commentId)"),
+            type: .POST) { request in
+            let task = URLSession.shared.dataTask(with: request) { data, _, error in
+                guard let data = data, error == nil else {
+                    completion(false)
+                    return
+                }
+               
+                do {
+                    let result = try JSONDecoder().decode(CommentResponse.self,
+                                                          from: data)
+                    if result.message.contains("Success") {
+                        completion(true)
+                        return
+                    }
+                    completion(false)
+                    
+                } catch {
+                    completion(false)
+                }
+                
+            }
+            task.resume()
+        }
+    }
+    
+    // Get comments of particular post
+    public func getComments(with postId:String,completion:@escaping ((Result<[Comment],Error>)->Void)) {
+        createRequest(with: URL(string: Constants.baseUrl + "/posts/comments?postId=\(postId)"),
+                      type: .GET) { request in
+            let task = URLSession.shared.dataTask(with: request) { data, _, error in
+                guard let data = data, error == nil else {
+                    completion(.failure(ApiError.failedToGetData))
+                    return
+                }
+                do {
+                    let result = try JSONDecoder().decode(CommentsResponse.self, from: data)
+                    completion(.success(result.comments))
+                } catch {
+                    completion(.failure(error))
+                }
+            }
+            task.resume()
+        }
+    }
+    
     // MARK: - Home Feed
     
     public func getHomeFeed(completion:@escaping ((Result<[Post],Error>)->Void)) {

@@ -189,6 +189,19 @@ extension HomeViewController:UITableViewDelegate,UITableViewDataSource {
 
 extension HomeViewController:PostTableViewCellDelegate {
     
+    func postTableViewCell(_ cell: PostTableViewCell, didTapCommentButton button: UIButton) {
+        
+        guard let indexPath = tableView.indexPath(for: cell) else {
+            return
+        }
+
+        let model = posts[indexPath.row]
+        
+        let vc = CommentsViewController(postId: model._id)
+        navigationController?.pushViewController(vc, animated: true)
+        
+    }
+    
     func postTableViewCell(_ cell: PostTableViewCell, didTapMoreButton button: UIButton) {
         
         guard let userId = UserDefaults.standard.value(forKey: "userId") as? String,

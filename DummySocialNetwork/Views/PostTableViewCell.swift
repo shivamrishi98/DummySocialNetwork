@@ -12,6 +12,7 @@ protocol PostTableViewCellDelegate:AnyObject {
     func postTableViewCell(_ cell:PostTableViewCell,didTaplikeUnlikeButton button:UIButton)
     func postTableViewCell(_ cell:PostTableViewCell,didTaplikeCountLabel label:UILabel)
     func postTableViewCell(_ cell:PostTableViewCell,didTapMoreButton button:UIButton)
+    func postTableViewCell(_ cell:PostTableViewCell,didTapCommentButton button:UIButton)
 }
 
 class PostTableViewCell: UITableViewCell {
@@ -79,6 +80,14 @@ class PostTableViewCell: UITableViewCell {
         return button
     }()
     
+    private let commentButton:UIButton = {
+        let button = UIButton(type: .system)
+        let image = UIImage(systemName: "heart")
+        button.setImage(image, for: .normal)
+        button.tintColor = .label
+        return button
+    }()
+    
     private let likeCountLabel:UILabel = {
         let label = UILabel()
         label.textColor = .label
@@ -98,6 +107,7 @@ class PostTableViewCell: UITableViewCell {
         contentView.addSubview(captionLabel)
         contentView.addSubview(nameLabel)
         contentView.addSubview(likeUnlikeButton)
+        contentView.addSubview(commentButton)
         contentView.addSubview(likeCountLabel)
         
         selectionStyle = .none
@@ -112,9 +122,18 @@ class PostTableViewCell: UITableViewCell {
                                    action: #selector(didTaplikeUnlikeButton(_:)),
                                    for: .touchUpInside)
         
+        commentButton.addTarget(self,
+                                   action: #selector(didTapCommentButton(_:)),
+                                   for: .touchUpInside)
+        
         let gesture = UITapGestureRecognizer(target: self,
                                              action: #selector(didTaplikeCountLabel(_:)))
         likeCountLabel.addGestureRecognizer(gesture)
+    }
+    
+    @objc private func didTapCommentButton(_ sender:UIButton) {
+        delegate?.postTableViewCell(self,
+                                    didTapCommentButton: sender)
     }
     
     @objc private func didTapMoreButton(_ sender:UIButton) {
@@ -174,9 +193,14 @@ class PostTableViewCell: UITableViewCell {
                                     width: 20,
                                     height: 20)
         
-        likeCountLabel.frame = CGRect(x: likeUnlikeButton.right + 10,
+        commentButton.frame = CGRect(x: likeUnlikeButton.right + 10,
                                     y: captionLabel.bottom + 5,
-                                    width: width-likeUnlikeButton.width-20,
+                                    width: 20,
+                                    height: 20)
+        
+        likeCountLabel.frame = CGRect(x:20,
+                                    y: likeUnlikeButton.bottom + 10,
+                                    width: width-likeUnlikeButton.width-40,
                                     height: 20)
     }
     
