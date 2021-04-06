@@ -10,24 +10,86 @@ import UIKit
 final class HomeViewController: UIViewController {
 
     private var posts = [Post]()
-
-    private let noPostsLabel:UILabel = {
-        let label = UILabel()
-        label.text = "No Posts"
-        label.isHidden = true
-        label.textColor = .label
-        label.textAlignment = .center
-        label.font = .systemFont(ofSize: 18, weight: .semibold)
-        return label
+    private var stories = [Story]()
+    
+    private let collectionView:UICollectionView = {
+        let collectionView = UICollectionView(
+            frame: .zero,
+            collectionViewLayout: UICollectionViewCompositionalLayout(
+                sectionProvider: { section, _ -> NSCollectionLayoutSection? in
+                    return HomeViewController.createSectionLayout(section: section)
+                }))
+        collectionView.backgroundColor = .systemBackground
+        collectionView.showsVerticalScrollIndicator = false
+        collectionView.register(PostCollectionViewCell.self,
+                                forCellWithReuseIdentifier: PostCollectionViewCell.identifier)
+        collectionView.register(RecommendedUsersCollectionViewCell.self,
+                                forCellWithReuseIdentifier: RecommendedUsersCollectionViewCell.identifier)
+        return collectionView
     }()
     
-    private let tableView:UITableView = {
-        let tableView = UITableView()
-        tableView.isHidden = true
-        tableView.register(PostTableViewCell.self,
-                           forCellReuseIdentifier: PostTableViewCell.identifier)
-        return tableView
-    }()
+    private static func createSectionLayout(section:Int) -> NSCollectionLayoutSection {
+        
+        
+        switch section {
+        
+        case 0:
+            let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1),
+                                                  heightDimension: .fractionalHeight(1))
+            let item = NSCollectionLayoutItem(layoutSize: itemSize)
+            
+            item.contentInsets = NSDirectionalEdgeInsets(top: 2,
+                                                         leading: 2,
+                                                         bottom: 2,
+                                                         trailing: 2)
+            
+            let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1),
+                                                   heightDimension: .absolute(100))
+            let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize,
+                                                           subitem: item,
+                                                           count: 5)
+            let section = NSCollectionLayoutSection(group: group)
+            section.orthogonalScrollingBehavior = .continuous
+            return section
+        case 1:
+            let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1),
+                                                  heightDimension: .fractionalHeight(1))
+            let item = NSCollectionLayoutItem(layoutSize: itemSize)
+            
+            item.contentInsets = NSDirectionalEdgeInsets(top: 2,
+                                                         leading: 2,
+                                                         bottom: 2,
+                                                         trailing: 2)
+            
+            let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1),
+                                                   heightDimension: .absolute(380))
+            
+            let group = NSCollectionLayoutGroup.vertical(layoutSize: groupSize,
+                                                           subitem: item,
+                                                           count: 1)
+            let section = NSCollectionLayoutSection(group: group)
+            return section
+        default:
+            let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1),
+                                                  heightDimension: .fractionalHeight(1))
+            let item = NSCollectionLayoutItem(layoutSize: itemSize)
+            
+            item.contentInsets = NSDirectionalEdgeInsets(top: 2,
+                                                         leading: 2,
+                                                         bottom: 2,
+                                                         trailing: 2)
+            
+            let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1),
+                                                   heightDimension: .absolute(380))
+            
+            let group = NSCollectionLayoutGroup.vertical(layoutSize: groupSize,
+                                                           subitem: item,
+                                                           count: 1)
+            let section = NSCollectionLayoutSection(group: group)
+            return section
+        }
+        
+    }
     
     private let refreshControl:UIRefreshControl = {
         let refreshControl = UIRefreshControl()
@@ -41,11 +103,10 @@ final class HomeViewController: UIViewController {
         super.viewDidLoad()
         title = "Home"
         view.backgroundColor = .systemBackground
-        view.addSubview(tableView)
-        view.addSubview(noPostsLabel)
-        tableView.delegate = self
-        tableView.dataSource = self
-        tableView.refreshControl = refreshControl
+        view.addSubview(collectionView)
+        collectionView.delegate = self
+        collectionView.dataSource = self
+        collectionView.refreshControl = refreshControl
         refreshControl.addTarget(self, action: #selector(didPullToRefresh), for: .valueChanged)
         fetchHomeFeed()
         
@@ -56,7 +117,7 @@ final class HomeViewController: UIViewController {
             using: { [weak self] _ in
                 self?.fetchHomeFeed()
             })
-        
+
         observer = NotificationCenter.default.addObserver(
             forName: .didNotifyFollowUnfollowUpdate,
             object: nil,
@@ -96,14 +157,7 @@ final class HomeViewController: UIViewController {
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        tableView.frame = view.bounds
-        
-        noPostsLabel.frame = CGRect(x: 0,
-                                    y: 0,
-                                    width: view.width,
-                                    height: 50)
-        noPostsLabel.center = view.center
-       
+        collectionView.frame = view.bounds
     }
 
 //    private func fetchMyPosts() {
@@ -122,90 +176,182 @@ final class HomeViewController: UIViewController {
     
     private func fetchHomeFeed() {
         posts.removeAll()
+        stories.removeAll()
+        
+        let group = DispatchGroup()
+        group.enter()
+        group.enter()
+        
         ApiManager.shared.getHomeFeed { [weak self] result in
+            defer {
+                group.leave()
+            }
             DispatchQueue.main.async {
                 switch result {
                 case .success(let posts):
                     self?.posts = posts
-                    self?.configureUI()
                 case .failure(let error):
                     print(error)
                 }
                 self?.refreshControl.endRefreshing()
             }
         }
+        
+        ApiManager.shared.getAllStories { [weak self] result in
+            defer {
+                group.leave()
+            }
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let stories):
+                    self?.stories = stories
+                case .failure(let error):
+                    print(error)
+                }
+                self?.refreshControl.endRefreshing()
+            }
+        }
+        
+        group.notify(queue: .main) { [weak self] in
+            self?.configureUI()
+            self?.refreshControl.endRefreshing()
+        }
+        
+        
     }
     
     private func configureUI() {
         NotificationCenter.default.post(name: .didNotifyPostCount,
                                         object: nil,
                                         userInfo: nil)
-        if posts.isEmpty {
-            noPostsLabel.isHidden = false
-            tableView.isHidden = true
-        } else {
-            noPostsLabel.isHidden = true
-            tableView.isHidden = false
-        }
-        tableView.reloadData()
+        collectionView.reloadData()
     }
     
 }
 
-extension HomeViewController:UITableViewDelegate,UITableViewDataSource {
+extension HomeViewController:UICollectionViewDelegate,UICollectionViewDataSource {
     
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return posts.count
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
+        return 2
     }
     
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: PostTableViewCell.identifier,
-                                                       for: indexPath) as? PostTableViewCell else {
-            return UITableViewCell()
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        switch section {
+        case 0:
+            return stories.count
+        case 1:
+            return posts.count
+        default:
+            return 0
         }
-        cell.delegate = self
-        let model = posts[indexPath.row]
-        let viewModel = PostViewModel(caption: model.caption,
-                                      name: model.name,
-                                      likes: model.likes,
-                                      contentUrl: URL(string: model.contentUrl),
-                                      profilePictureUrl: URL(string: model.profilePictureUrl ?? ""),
-                                      createdDate: String.formattedDate(
-                                        string: model.createdDate,
-                                        dateFormat: "MMM d, h:mm a"))
-        cell.configure(with: viewModel)
-        return cell
     }
     
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 380
-    }
 
-    func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
-        return UIView()
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+    
+        switch indexPath.section {
+        case  0:
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: RecommendedUsersCollectionViewCell.identifier,for: indexPath) as? RecommendedUsersCollectionViewCell else {
+                return UICollectionViewCell()
+            }
+            let model = stories[indexPath.row]
+            let viewModel = RecommendedUsersViewModel(
+                name: model.createdBy.name,
+                profilePictureUrl: URL(string: model.createdBy.profilePictureUrl ?? ""))
+            cell.configure(with: viewModel)
+            return cell
+        case 1:
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PostCollectionViewCell.identifier,for: indexPath) as? PostCollectionViewCell else {
+                return UICollectionViewCell()
+            }
+            cell.delegate = self
+            let model = posts[indexPath.row]
+            let viewModel = PostViewModel(caption: model.caption,
+                                          name: model.name,
+                                          likes: model.likes,
+                                          contentUrl: URL(string: model.contentUrl),
+                                          profilePictureUrl: URL(string: model.profilePictureUrl ?? ""),
+                                          createdDate: String.formattedDate(
+                                            string: model.createdDate,
+                                            dateFormat: "MMM d, h:mm a"))
+            cell.configure(with: viewModel)
+            return cell
+            
+        default:
+            return UICollectionViewCell()
+        }
+
     }
      
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        
+        switch indexPath.section {
+        case 0:
+            let story = stories[indexPath.row]
+            let vc = StoryViewController(story: story)
+            present(vc, animated: true)
+        default:
+            break
+        }
+        
+    }
+    
 }
 
-extension HomeViewController:PostTableViewCellDelegate {
+extension HomeViewController:PostCollectionViewCellDelegate {
     
-    func postTableViewCell(_ cell: PostTableViewCell, didTapCommentButton button: UIButton) {
+    func postCollectionViewCell(_ cell: PostCollectionViewCell, didTaplikeUnlikeButton button: UIButton) {
         
-        guard let indexPath = tableView.indexPath(for: cell) else {
+        guard let indexpath = collectionView.indexPath(for: cell) else {
             return
         }
-
-        let model = posts[indexPath.row]
         
-        let vc = CommentsViewController(postId: model._id)
+        let post = posts[indexpath.row]
+        
+        if button.accessibilityIdentifier == "hand.thumbsup" {
+            
+            ApiManager.shared.likePost(with: post._id) { [weak self] success in
+                DispatchQueue.main.async {
+                    if success {
+                        button.setImage(UIImage(systemName: "hand.thumbsup.fill"),
+                                        for: .normal)
+                        button.accessibilityIdentifier = "hand.thumbsup.fill"
+                        self?.fetchHomeFeed()
+                    }
+                }
+            }
+            
+        } else {
+            ApiManager.shared.unlikePost(with: post._id) { [weak self] success in
+                DispatchQueue.main.async {
+                    if success {
+                        button.setImage(UIImage(systemName: "hand.thumbsup"),
+                                        for: .normal)
+                        button.accessibilityIdentifier = "hand.thumbsup"
+                        self?.fetchHomeFeed()
+                    }
+                }
+            }
+        }
+        
+    }
+    
+    func postCollectionViewCell(_ cell: PostCollectionViewCell, didTaplikeCountLabel label: UILabel) {
+        
+        guard let indexpath = collectionView.indexPath(for: cell) else {
+            return
+        }
+        
+        let post = posts[indexpath.row]
+        let vc = ListUsersViewController(vcTitle: "Likes", isPostLikes: true,id: post._id)
         navigationController?.pushViewController(vc, animated: true)
         
     }
     
-    func postTableViewCell(_ cell: PostTableViewCell, didTapMoreButton button: UIButton) {
+    func postCollectionViewCell(_ cell: PostCollectionViewCell, didTapMoreButton button: UIButton) {
         
         guard let userId = UserDefaults.standard.value(forKey: "userId") as? String,
-              let indexPath = tableView.indexPath(for: cell) else {
+              let indexPath = collectionView.indexPath(for: cell) else {
             return
         }
 
@@ -249,72 +395,37 @@ extension HomeViewController:PostTableViewCellDelegate {
                                             style: .cancel, handler: nil))
         
         present(actionSheet, animated: true)
+        
     }
     
+    func postCollectionViewCell(_ cell: PostCollectionViewCell, didTapCommentButton button: UIButton) {
+        
+        guard let indexPath = collectionView.indexPath(for: cell) else {
+            return
+        }
+
+        let model = posts[indexPath.row]
+        
+        let vc = CommentsViewController(postId: model._id)
+        navigationController?.pushViewController(vc, animated: true)
+    }
+    
+
+
     func deletePost(indexPath:IndexPath) {
-        tableView.beginUpdates()
         let postId = posts[indexPath.row]._id
         let deletedPost = posts.remove(at: indexPath.row)
-        tableView.deleteRows(at: [indexPath],
-                             with: .left)
+        collectionView.deleteItems(at: [indexPath])
         ApiManager.shared.deletePost(with: postId) { [weak self] success in
             DispatchQueue.main.async {
                 if !success {
                     // add model and row back and show error alert
                     self?.posts.insert(deletedPost, at: indexPath.row)
-                    self?.tableView.insertRows(at: [indexPath],
-                                         with: .left)
+                    self?.collectionView.insertItems(at: [indexPath])
                 }
                 self?.configureUI()
             }
         }
-        tableView.endUpdates()
     }
-
-    func postTableViewCell(_ cell: PostTableViewCell, didTaplikeUnlikeButton button: UIButton) {
-        
-        guard let indexpath = tableView.indexPath(for: cell) else {
-            return
-        }
-        
-        let post = posts[indexpath.row]
-        
-        if button.accessibilityIdentifier == "hand.thumbsup" {
-            
-            ApiManager.shared.likePost(with: post._id) { [weak self] success in
-                DispatchQueue.main.async {
-                    if success {
-                        button.setImage(UIImage(systemName: "hand.thumbsup.fill"),
-                                        for: .normal)
-                        button.accessibilityIdentifier = "hand.thumbsup.fill"
-                        self?.fetchHomeFeed()
-                    }
-                }
-            }
-            
-        } else {
-            ApiManager.shared.unlikePost(with: post._id) { [weak self] success in
-                DispatchQueue.main.async {
-                    if success {
-                        button.setImage(UIImage(systemName: "hand.thumbsup"),
-                                        for: .normal)
-                        button.accessibilityIdentifier = "hand.thumbsup"
-                        self?.fetchHomeFeed()
-                    }
-                }
-            }
-        }
-    }
-    
-    func postTableViewCell(_ cell: PostTableViewCell, didTaplikeCountLabel label: UILabel) {
-        
-        guard let indexpath = tableView.indexPath(for: cell) else {
-            return
-        }
-        
-        let post = posts[indexpath.row]
-        let vc = ListUsersViewController(vcTitle: "Likes", isPostLikes: true,id: post._id)
-        navigationController?.pushViewController(vc, animated: true)
-    }
-    
 }
+    

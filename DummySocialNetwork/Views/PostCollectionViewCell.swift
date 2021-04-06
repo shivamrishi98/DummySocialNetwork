@@ -1,25 +1,26 @@
 //
-//  PostTableViewCell.swift
+//  PostCollectionViewCell.swift
 //  DummySocialNetwork
 //
-//  Created by Shivam Rishi on 28/03/21.
+//  Created by Shivam Rishi on 06/04/21.
 //
 
 import UIKit
 import SDWebImage
 
-protocol PostTableViewCellDelegate:AnyObject {
-    func postTableViewCell(_ cell:PostTableViewCell,didTaplikeUnlikeButton button:UIButton)
-    func postTableViewCell(_ cell:PostTableViewCell,didTaplikeCountLabel label:UILabel)
-    func postTableViewCell(_ cell:PostTableViewCell,didTapMoreButton button:UIButton)
-    func postTableViewCell(_ cell:PostTableViewCell,didTapCommentButton button:UIButton)
+protocol PostCollectionViewCellDelegate:AnyObject {
+    func postCollectionViewCell(_ cell:PostCollectionViewCell,didTaplikeUnlikeButton button:UIButton)
+    func postCollectionViewCell(_ cell:PostCollectionViewCell,didTaplikeCountLabel label:UILabel)
+    func postCollectionViewCell(_ cell:PostCollectionViewCell,didTapMoreButton button:UIButton)
+    func postCollectionViewCell(_ cell:PostCollectionViewCell,didTapCommentButton button:UIButton)
 }
 
-class PostTableViewCell: UITableViewCell {
-
-    static let identifier = "PostTableViewCell"
+class PostCollectionViewCell: UICollectionViewCell {
     
-    weak var delegate:PostTableViewCellDelegate?
+    
+    static let identifier = "PostCollectionViewCell"
+    
+    weak var delegate:PostCollectionViewCellDelegate?
     
     private let profileImageView:UIImageView = {
         let imageView = UIImageView()
@@ -97,9 +98,8 @@ class PostTableViewCell: UITableViewCell {
         return label
     }()
     
-    
-    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
-        super.init(style: style, reuseIdentifier: reuseIdentifier)
+    override init(frame: CGRect) {
+        super.init(frame: frame)
         contentView.addSubview(profileImageView)
         contentView.addSubview(postImageView)
         contentView.addSubview(dateCreatedLabel)
@@ -109,45 +109,46 @@ class PostTableViewCell: UITableViewCell {
         contentView.addSubview(likeUnlikeButton)
         contentView.addSubview(commentButton)
         contentView.addSubview(likeCountLabel)
-        selectionStyle = .none
         
         profileImageView.layer.cornerRadius = 25/2
         
         moreButton.addTarget(self,
-                                   action: #selector(didTapMoreButton(_:)),
-                                   for: .touchUpInside)
+                             action: #selector(didTapMoreButton(_:)),
+                             for: .touchUpInside)
         
         likeUnlikeButton.addTarget(self,
                                    action: #selector(didTaplikeUnlikeButton(_:)),
                                    for: .touchUpInside)
         
         commentButton.addTarget(self,
-                                   action: #selector(didTapCommentButton(_:)),
-                                   for: .touchUpInside)
+                                action: #selector(didTapCommentButton(_:)),
+                                for: .touchUpInside)
         
         let gesture = UITapGestureRecognizer(target: self,
                                              action: #selector(didTaplikeCountLabel(_:)))
         likeCountLabel.addGestureRecognizer(gesture)
+        
     }
     
+    
     @objc private func didTapCommentButton(_ sender:UIButton) {
-        delegate?.postTableViewCell(self,
-                                    didTapCommentButton: sender)
+        delegate?.postCollectionViewCell(self,
+                                         didTapCommentButton: sender)
     }
     
     @objc private func didTapMoreButton(_ sender:UIButton) {
-        delegate?.postTableViewCell(self,
-                                    didTapMoreButton: sender)
+        delegate?.postCollectionViewCell(self,
+                                         didTapMoreButton: sender)
     }
     
     @objc private func didTaplikeCountLabel(_ sender:UILabel) {
-        delegate?.postTableViewCell(self,
-                                    didTaplikeCountLabel: sender)
+        delegate?.postCollectionViewCell(self,
+                                         didTaplikeCountLabel: sender)
     }
     
     @objc private func didTaplikeUnlikeButton(_ sender:UIButton) {
-        delegate?.postTableViewCell(self,
-                                    didTaplikeUnlikeButton: sender)
+        delegate?.postCollectionViewCell(self,
+                                         didTaplikeUnlikeButton: sender)
     }
     
     required init?(coder: NSCoder) {
@@ -173,14 +174,14 @@ class PostTableViewCell: UITableViewCell {
                                         height: 25)
         
         moreButton.frame = CGRect(x: dateCreatedLabel.right + 5,
-                                        y: 5,
-                                        width:20,
-                                        height: 25)
+                                  y: 5,
+                                  width:20,
+                                  height: 25)
         
         postImageView.frame = CGRect(x: 0,
-                                    y: profileImageView.bottom + 5,
-                                    width: frame.width,
-                                    height: 250)
+                                     y: profileImageView.bottom + 5,
+                                     width: frame.width,
+                                     height: 250)
         
         captionLabel.frame = CGRect(x: 20,
                                     y: postImageView.bottom,
@@ -188,19 +189,19 @@ class PostTableViewCell: UITableViewCell {
                                     height: frame.height-profileImageView.height-postImageView.height-65)
         
         likeUnlikeButton.frame = CGRect(x: 20,
-                                    y: captionLabel.bottom + 5,
-                                    width: 20,
-                                    height: 20)
+                                        y: captionLabel.bottom + 5,
+                                        width: 20,
+                                        height: 20)
         
         commentButton.frame = CGRect(x: likeUnlikeButton.right + 10,
-                                    y: captionLabel.bottom + 5,
-                                    width: 20,
-                                    height: 20)
+                                     y: captionLabel.bottom + 5,
+                                     width: 20,
+                                     height: 20)
         
         likeCountLabel.frame = CGRect(x:20,
-                                    y: likeUnlikeButton.bottom + 10,
-                                    width: width-likeUnlikeButton.width-40,
-                                    height: 20)
+                                      y: likeUnlikeButton.bottom + 10,
+                                      width: width-likeUnlikeButton.width-40,
+                                      height: 20)
     }
     
     override func prepareForReuse() {
@@ -211,7 +212,7 @@ class PostTableViewCell: UITableViewCell {
         profileImageView.image = nil
         postImageView.image = nil
         moreButton.setImage(UIImage(systemName: "ellipsis"),
-                                  for: .normal)
+                            for: .normal)
         likeUnlikeButton.setImage(UIImage(systemName: "hand.thumbsup"),
                                   for: .normal)
         likeUnlikeButton.accessibilityIdentifier = "hand.thumbsup"
@@ -219,7 +220,7 @@ class PostTableViewCell: UITableViewCell {
     }
     
     func configure(with viewModel:PostViewModel){
-            
+        
         nameLabel.text = viewModel.name
         dateCreatedLabel.text = viewModel.createdDate
         captionLabel.text = viewModel.caption
@@ -227,12 +228,12 @@ class PostTableViewCell: UITableViewCell {
                                      placeholderImage: UIImage(systemName: "person"),
                                      completed: nil)
         postImageView.sd_setImage(with: viewModel.contentUrl,
-                                     placeholderImage: UIImage(systemName: "photo"),
-                                     completed: nil)
+                                  placeholderImage: UIImage(systemName: "photo"),
+                                  completed: nil)
         
         let likesExist = viewModel.likes.isEmpty
         let likesCount = viewModel.likes.count
-
+        
         if !likesExist {
             likeCountLabel.isHidden = false
             
@@ -261,3 +262,5 @@ class PostTableViewCell: UITableViewCell {
     }
     
 }
+
+

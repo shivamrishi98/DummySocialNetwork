@@ -15,6 +15,9 @@
 		9639AAA3260F5BB400B9260E /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9639AAA1260F5BB400B9260E /* LaunchScreen.storyboard */; };
 		9639AAB4260F5C1500B9260E /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9639AAB3260F5C1500B9260E /* Extensions.swift */; };
 		9639AABA260F5C7100B9260E /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9639AAB9260F5C7100B9260E /* LoginViewController.swift */; };
+		9649D3A6261C3F3900590BAC /* PostCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9649D3A5261C3F3900590BAC /* PostCollectionViewCell.swift */; };
+		9649D3A9261C462F00590BAC /* Story.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9649D3A8261C462F00590BAC /* Story.swift */; };
+		9649D3AC261C4A6D00590BAC /* StoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9649D3AB261C4A6D00590BAC /* StoryViewController.swift */; };
 		9668719F2611ACB200341DAD /* CreatePostViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9668719E2611ACB200341DAD /* CreatePostViewController.swift */; };
 		966E7049261A24BB0035D579 /* CommentsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 966E7048261A24BB0035D579 /* CommentsViewController.swift */; };
 		967D25D3260F62EE001F442E /* RegisterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 967D25D2260F62EE001F442E /* RegisterViewController.swift */; };
@@ -33,7 +36,6 @@
 		96B5F40026162FFE000D692D /* ListUsersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96B5F3FF26162FFE000D692D /* ListUsersViewController.swift */; };
 		96B5F403261631BA000D692D /* ListUsersViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96B5F402261631BA000D692D /* ListUsersViewModel.swift */; };
 		96B5F406261631E3000D692D /* ListUsersTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96B5F405261631E3000D692D /* ListUsersTableViewCell.swift */; };
-		96BF29542610E652000EBB61 /* PostTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96BF29532610E652000EBB61 /* PostTableViewCell.swift */; };
 		96BF29572610E9A7000EBB61 /* PostViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96BF29562610E9A7000EBB61 /* PostViewModel.swift */; };
 		96BF295A2610EB55000EBB61 /* Post.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96BF29592610EB55000EBB61 /* Post.swift */; };
 		96BF295D2610F813000EBB61 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96BF295C2610F813000EBB61 /* SettingsViewController.swift */; };
@@ -59,6 +61,9 @@
 		9639AAA4260F5BB400B9260E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		9639AAB3260F5C1500B9260E /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		9639AAB9260F5C7100B9260E /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
+		9649D3A5261C3F3900590BAC /* PostCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostCollectionViewCell.swift; sourceTree = "<group>"; };
+		9649D3A8261C462F00590BAC /* Story.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Story.swift; sourceTree = "<group>"; };
+		9649D3AB261C4A6D00590BAC /* StoryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoryViewController.swift; sourceTree = "<group>"; };
 		9668719E2611ACB200341DAD /* CreatePostViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreatePostViewController.swift; sourceTree = "<group>"; };
 		966E7048261A24BB0035D579 /* CommentsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentsViewController.swift; sourceTree = "<group>"; };
 		967D25D2260F62EE001F442E /* RegisterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterViewController.swift; sourceTree = "<group>"; };
@@ -77,7 +82,6 @@
 		96B5F3FF26162FFE000D692D /* ListUsersViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListUsersViewController.swift; sourceTree = "<group>"; };
 		96B5F402261631BA000D692D /* ListUsersViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListUsersViewModel.swift; sourceTree = "<group>"; };
 		96B5F405261631E3000D692D /* ListUsersTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListUsersTableViewCell.swift; sourceTree = "<group>"; };
-		96BF29532610E652000EBB61 /* PostTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostTableViewCell.swift; sourceTree = "<group>"; };
 		96BF29562610E9A7000EBB61 /* PostViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostViewModel.swift; sourceTree = "<group>"; };
 		96BF29592610EB55000EBB61 /* Post.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Post.swift; sourceTree = "<group>"; };
 		96BF295C2610F813000EBB61 /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
@@ -149,6 +153,7 @@
 				967D25E2260F7511001F442E /* Auth.swift */,
 				967D25E5260F7DBD001F442E /* User.swift */,
 				96BF29592610EB55000EBB61 /* Post.swift */,
+				9649D3A8261C462F00590BAC /* Story.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -157,12 +162,12 @@
 			isa = PBXGroup;
 			children = (
 				9639AAB2260F5C0100B9260E /* Storyboard */,
-				96BF29532610E652000EBB61 /* PostTableViewCell.swift */,
 				968A489D26130FE2006A7EA7 /* SearchResultsTableViewCell.swift */,
 				96B5F405261631E3000D692D /* ListUsersTableViewCell.swift */,
 				96E9D599261757F10092651A /* RecommendedUsersCollectionViewCell.swift */,
 				968635682617601D002BB676 /* RecommendedUsersHeaderCollectionReusableView.swift */,
 				960A7D83261B64A100BE8BA1 /* CommentTableViewCell.swift */,
+				9649D3A5261C3F3900590BAC /* PostCollectionViewCell.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -249,6 +254,7 @@
 				96C9A7B426130D3200047F41 /* SearchResultsViewController.swift */,
 				96B5F3FF26162FFE000D692D /* ListUsersViewController.swift */,
 				966E7048261A24BB0035D579 /* CommentsViewController.swift */,
+				9649D3AB261C4A6D00590BAC /* StoryViewController.swift */,
 			);
 			path = Others;
 			sourceTree = "<group>";
@@ -379,6 +385,8 @@
 				9639AABA260F5C7100B9260E /* LoginViewController.swift in Sources */,
 				967D25DC260F6467001F442E /* AuthManager.swift in Sources */,
 				96E9D59A261757F10092651A /* RecommendedUsersCollectionViewCell.swift in Sources */,
+				9649D3A6261C3F3900590BAC /* PostCollectionViewCell.swift in Sources */,
+				9649D3AC261C4A6D00590BAC /* StoryViewController.swift in Sources */,
 				96B5F406261631E3000D692D /* ListUsersTableViewCell.swift in Sources */,
 				96BF29602610FC5C000EBB61 /* SettingsSectionViewModel.swift in Sources */,
 				967D25D3260F62EE001F442E /* RegisterViewController.swift in Sources */,
@@ -391,7 +399,6 @@
 				96BF38FB26108851009A8C28 /* EditProfileViewController.swift in Sources */,
 				9639AA99260F5BB400B9260E /* SceneDelegate.swift in Sources */,
 				9639AAB4260F5C1500B9260E /* Extensions.swift in Sources */,
-				96BF29542610E652000EBB61 /* PostTableViewCell.swift in Sources */,
 				960A7D87261B64F700BE8BA1 /* CommentViewModel.swift in Sources */,
 				967D25D6260F63EA001F442E /* HomeViewController.swift in Sources */,
 				96B5F40026162FFE000D692D /* ListUsersViewController.swift in Sources */,
@@ -408,6 +415,7 @@
 				967D25DF260F6E7D001F442E /* Constants.swift in Sources */,
 				968635692617601D002BB676 /* RecommendedUsersHeaderCollectionReusableView.swift in Sources */,
 				967D25E6260F7DBD001F442E /* User.swift in Sources */,
+				9649D3A9261C462F00590BAC /* Story.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

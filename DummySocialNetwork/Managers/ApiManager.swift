@@ -642,5 +642,52 @@ final class ApiManager {
         }
     }
     
+    // MARK: - Stories
+    
+    public func createStory(request requestModel:ProfilePictureRequest,completion: @escaping (Result<CreateStoryResponse,Error>)->Void) {
+        createMultipartFormRequest(with: URL(string: Constants.baseUrl + "/stories/create"),
+                                   requestModel: requestModel) { request in
+            let task = URLSession.shared.dataTask(with: request) { data, _, error in
+                guard let data = data, error == nil else {
+                    completion(.failure(ApiError.failedToGetData))
+                    return
+                }
+                do {
+                    let result = try JSONDecoder().decode(CreateStoryResponse.self,
+                                                        from: data)
+                    completion(.success(result))
+                } catch {
+                    print(error)
+                    completion(.failure(error))
+                }
+            }
+            task.resume()
+        }
+    }
+    
+    public func getAllStories(completion: @escaping (Result<[Story],Error>) -> Void) {
+        createRequest(with: URL(string: Constants.baseUrl + "/stories/getstories"),
+                      type: .GET) { request in
+            let task = URLSession.shared.dataTask(with: request) { data, _, error in
+                guard let data = data, error == nil else {
+                    completion(.failure(ApiError.failedToGetData))
+                    return
+                }
+                
+                do {
+                    let results = try JSONDecoder().decode(StoriesResponse.self,
+                                                           from: data)
+                    completion(.success(results.stories))
+                } catch {
+                    completion(.failure(error))
+                }
+                
+            }
+            task.resume()
+        }
+    }
+    
+    
+    
 }
 
