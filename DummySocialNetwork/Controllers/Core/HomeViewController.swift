@@ -197,20 +197,7 @@ final class HomeViewController: UIViewController {
             }
         }
         
-        ApiManager.shared.getAllStories { [weak self] result in
-            defer {
-                group.leave()
-            }
-            DispatchQueue.main.async {
-                switch result {
-                case .success(let stories):
-                    self?.stories = stories
-                case .failure(let error):
-                    print(error)
-                }
-                self?.refreshControl.endRefreshing()
-            }
-        }
+        fetchStories(group:group)
         
         group.notify(queue: .main) { [weak self] in
             self?.configureUI()
@@ -218,6 +205,25 @@ final class HomeViewController: UIViewController {
         }
         
         
+    }
+    
+    private func fetchStories(group:DispatchGroup? = nil) {
+        ApiManager.shared.getAllStories { [weak self] result in
+            defer {
+                group?.leave()
+            }
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let stories):
+                    self?.stories = stories
+                    self?.configureUI()
+                case .failure(let error):
+                    print(error)
+                }
+                self?.refreshControl.endRefreshing()
+            }
+            
+        }
     }
     
     private func configureUI() {
@@ -238,7 +244,7 @@ extension HomeViewController:UICollectionViewDelegate,UICollectionViewDataSource
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         switch section {
         case 0:
-            return stories.count
+            return stories.count + 1
         case 1:
             return posts.count
         default:
@@ -254,11 +260,16 @@ extension HomeViewController:UICollectionViewDelegate,UICollectionViewDataSource
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: RecommendedUsersCollectionViewCell.identifier,for: indexPath) as? RecommendedUsersCollectionViewCell else {
                 return UICollectionViewCell()
             }
-            let model = stories[indexPath.row]
-            let viewModel = RecommendedUsersViewModel(
-                name: model.createdBy.name,
-                profilePictureUrl: URL(string: model.createdBy.profilePictureUrl ?? ""))
-            cell.configure(with: viewModel)
+            switch indexPath.row {
+            case 0:
+            cell.configure()
+            default:
+                let model = stories[indexPath.row-1]
+                let viewModel = RecommendedUsersViewModel(
+                    name: model.createdBy.name,
+                    profilePictureUrl: URL(string: model.createdBy.profilePictureUrl ?? ""))
+                cell.configure(with: viewModel)
+            }
             return cell
         case 1:
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PostCollectionViewCell.identifier,for: indexPath) as? PostCollectionViewCell else {
@@ -287,9 +298,17 @@ extension HomeViewController:UICollectionViewDelegate,UICollectionViewDataSource
         
         switch indexPath.section {
         case 0:
-            let story = stories[indexPath.row]
-            let vc = StoryViewController(story: story)
-            present(vc, animated: true)
+            switch indexPath.row {
+            case 0:
+                let picker = UIImagePickerController()
+                picker.allowsEditing = true
+                picker.delegate = self
+                present(picker, animated: true)
+            default:
+                let story = stories[indexPath.row-1]
+                let vc = StoryViewController(story: story)
+                present(vc, animated: true)
+            }
         default:
             break
         }
@@ -429,3 +448,37 @@ extension HomeViewController:PostCollectionViewCellDelegate {
     }
 }
     
+extension HomeViewController:UINavigationControllerDelegate,UIImagePickerControllerDelegate {
+    
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        picker.dismiss(animated: true, completion: nil)
+    }
+    
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+       
+        guard let image = info[.editedImage] as? UIImage,
+              let imageData = image.jpegData(compressionQuality: 1),
+              let imageUrl = info[.imageURL]as? URL,
+              let fileName = imageUrl.pathComponents.last else {
+            return
+        }
+        
+        let mimeType = "image/\(imageUrl.pathExtension)"
+        
+        let request = ProfilePictureRequest(fileName: fileName,
+                                            mimeType: mimeType,
+                                            imageData: imageData)
+        ApiManager.shared.createStory(request: request) { [weak self] success in
+            DispatchQueue.main.async {
+                if success {
+                    picker.dismiss(animated: true) {
+                        self?.fetchStories()
+                    }
+                }
+                
+            }
+        }
+    }
+}
+
+

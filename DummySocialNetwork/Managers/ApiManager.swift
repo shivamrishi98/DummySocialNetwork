@@ -644,21 +644,20 @@ final class ApiManager {
     
     // MARK: - Stories
     
-    public func createStory(request requestModel:ProfilePictureRequest,completion: @escaping (Result<CreateStoryResponse,Error>)->Void) {
+    public func createStory(request requestModel:ProfilePictureRequest,completion: @escaping (Bool)->Void) {
         createMultipartFormRequest(with: URL(string: Constants.baseUrl + "/stories/create"),
                                    requestModel: requestModel) { request in
             let task = URLSession.shared.dataTask(with: request) { data, _, error in
                 guard let data = data, error == nil else {
-                    completion(.failure(ApiError.failedToGetData))
+                    completion(false)
                     return
                 }
                 do {
-                    let result = try JSONDecoder().decode(CreateStoryResponse.self,
+                    let _ = try JSONDecoder().decode(CreateStoryResponse.self,
                                                         from: data)
-                    completion(.success(result))
+                    completion(true)
                 } catch {
-                    print(error)
-                    completion(.failure(error))
+                    completion(false)
                 }
             }
             task.resume()

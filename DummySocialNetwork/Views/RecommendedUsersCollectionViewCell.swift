@@ -12,10 +12,12 @@ class RecommendedUsersCollectionViewCell: UICollectionViewCell {
     
     static let identifier = "RecommendedUsersCollectionViewCell"
     
+
     private let profileImageView:UIImageView = {
         let imageView = UIImageView()
         imageView.tintColor = .label
         imageView.contentMode = .scaleAspectFill
+        imageView.clipsToBounds = true
         let layer = imageView.layer
         layer.borderWidth = 1
         layer.borderColor = UIColor.label.cgColor
@@ -71,5 +73,9 @@ class RecommendedUsersCollectionViewCell: UICollectionViewCell {
                                      completed: nil)
     }
     
+    func configure() {
+        profileImageView.image = UIImage(
+            systemName: "person.badge.plus")
+    }
     
 }
