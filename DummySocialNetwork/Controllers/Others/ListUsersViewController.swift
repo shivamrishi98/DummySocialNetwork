@@ -7,7 +7,7 @@
 
 import UIKit
 
-class ListUsersViewController: UIViewController {
+final class ListUsersViewController: UIViewController {
 
     private let vcTitle:String
     private let isFollowing:Bool

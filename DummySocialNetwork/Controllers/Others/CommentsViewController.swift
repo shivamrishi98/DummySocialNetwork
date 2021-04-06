@@ -7,7 +7,7 @@
 
 import UIKit
 
-class CommentsViewController: UIViewController {
+final class CommentsViewController: UIViewController {
 
     private let postId:String
     private var comments = [Comment]()

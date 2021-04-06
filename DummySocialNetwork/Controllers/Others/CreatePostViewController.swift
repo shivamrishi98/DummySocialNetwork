@@ -7,7 +7,7 @@
 
 import UIKit
 
-class CreatePostViewController: UIViewController {
+final class CreatePostViewController: UIViewController {
 
     var createPostCompletion:((Bool)->Void)?
     private var imageRequestModel:ImageRequestModel?

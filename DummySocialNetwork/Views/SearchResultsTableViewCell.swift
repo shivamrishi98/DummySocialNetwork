@@ -8,7 +8,7 @@
 import UIKit
 import SDWebImage
 
-class SearchResultsTableViewCell: UITableViewCell {
+final class SearchResultsTableViewCell: UITableViewCell {
 
     static let identifier = "SearchResultsTableViewCell"
     

@@ -15,7 +15,7 @@ protocol PostCollectionViewCellDelegate:AnyObject {
     func postCollectionViewCell(_ cell:PostCollectionViewCell,didTapCommentButton button:UIButton)
 }
 
-class PostCollectionViewCell: UICollectionViewCell {
+final class PostCollectionViewCell: UICollectionViewCell {
     
     
     static let identifier = "PostCollectionViewCell"

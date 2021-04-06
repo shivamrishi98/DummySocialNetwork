@@ -11,7 +11,7 @@ protocol SearchResultsViewControllerDelegate:AnyObject {
     func searchResultsViewControllerDidSelectUser(_ result:User)
 }
 
-class SearchResultsViewController: UIViewController {
+final class SearchResultsViewController: UIViewController {
 
     private var users = [User]()
     

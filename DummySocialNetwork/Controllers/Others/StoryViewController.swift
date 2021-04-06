@@ -8,7 +8,7 @@
 import UIKit
 import SDWebImage
 
-class StoryViewController: UIViewController {
+final class StoryViewController: UIViewController {
 
     private let story:Story
     

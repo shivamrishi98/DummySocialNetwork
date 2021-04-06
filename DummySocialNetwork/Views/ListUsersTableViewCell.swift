@@ -8,7 +8,7 @@
 import UIKit
 import SDWebImage
 
-class ListUsersTableViewCell: UITableViewCell {
+final class ListUsersTableViewCell: UITableViewCell {
 
     static let identifier = "ListUsersTableViewCell"
     

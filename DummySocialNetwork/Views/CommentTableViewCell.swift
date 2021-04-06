@@ -8,7 +8,7 @@
 import UIKit
 import SDWebImage
 
-class CommentTableViewCell: UITableViewCell {
+final class CommentTableViewCell: UITableViewCell {
 
     static let identifier = "CommentTableViewCell"
     

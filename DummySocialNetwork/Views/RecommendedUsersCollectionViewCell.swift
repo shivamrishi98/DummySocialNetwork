@@ -8,7 +8,7 @@
 import UIKit
 import SDWebImage
 
-class RecommendedUsersCollectionViewCell: UICollectionViewCell {
+final class RecommendedUsersCollectionViewCell: UICollectionViewCell {
     
     static let identifier = "RecommendedUsersCollectionViewCell"
     
