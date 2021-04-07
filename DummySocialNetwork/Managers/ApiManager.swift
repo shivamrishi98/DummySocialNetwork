@@ -608,8 +608,13 @@ final class ApiManager {
                     return
                 }
                 do {
-                    let result = try JSONDecoder().decode(MyPostsResponse.self, from: data)
-                    completion(.success(result.posts))
+                    let result = try JSONDecoder().decode(BaseResponse<MyPostsResponse>.self, from: data)
+                    if let error = result.error {
+                        completion(.failure(error))
+                    }
+                    if let data = result.data?.posts {
+                        completion(.success(data))
+                    }
                 } catch {
                     completion(.failure(error))
                 }
