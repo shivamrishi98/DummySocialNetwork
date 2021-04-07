@@ -53,8 +53,13 @@ final class AuthManager {
             }
             
             do {
-                let result = try JSONDecoder().decode(SignUpResponse.self, from: data)
-                completion(.success(result))
+                let result = try JSONDecoder().decode(BaseResponse<SignUpResponse>.self, from: data)
+                if let error = result.error {
+                    completion(.failure(error))
+                }
+                if let data = result.data {
+                    completion(.success(data))
+                }
             } catch {
                 completion(.failure(error))
             }
