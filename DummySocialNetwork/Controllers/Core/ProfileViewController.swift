@@ -11,11 +11,13 @@ import SDWebImage
 final class ProfileViewController: UIViewController {
 
     private var user:User?
+    private var userId:String?
     private let isOwner:Bool
     
-    init(isOwner:Bool = false,user:User? = nil) {
+    init(isOwner:Bool = false,user:User? = nil,userId:String? = nil) {
         self.isOwner = isOwner
         self.user = user
+        self.userId = userId
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -167,25 +169,30 @@ final class ProfileViewController: UIViewController {
                 })
             
         } else {
-            
-            guard let user = user else {
-                return
-            }
-            let viewModel = ProfileViewModel(
-                name: user.name,
-                email: user.email ?? "",
-                postsCount: user.posts?.count ?? 0,
-                followersCount: user.followers?.count ?? 0,
-                followingsCount: user.following?.count ?? 0,
-                profileImageUrl: URL(string: user.profilePictureUrl ?? ""),
-                dateCreated: user.createdDate ?? "")
-            
-            DispatchQueue.main.async { [weak self] in
-                self?.configure(with: viewModel)
+    
+            if let userId = userId {
+                fetchUserProfile(userId: userId)
+            } else {
+                
+                guard let user = user else {
+                    return
+                }
+                let viewModel = ProfileViewModel(
+                    name: user.name,
+                    email: user.email ?? "",
+                    postsCount: user.posts?.count ?? 0,
+                    followersCount: user.followers?.count ?? 0,
+                    followingsCount: user.following?.count ?? 0,
+                    profileImageUrl: URL(string: user.profilePictureUrl ?? ""),
+                    dateCreated: user.createdDate ?? "")
+                
+                DispatchQueue.main.async { [weak self] in
+                    self?.configure(with: viewModel)
+                }
+                checkForPrivateAccount()
+                checkForAction()
             }
             actionButton.isHidden = false
-            checkForAction()
-            checkForPrivateAccount()
         }
         
         actionButton.addTarget(self,
@@ -301,6 +308,7 @@ final class ProfileViewController: UIViewController {
                 case .success(let user):
                     self?.user = user
                     self?.checkForPrivateAccount()
+                    self?.checkForAction()
                     self?.configure(
                         with:
                             ProfileViewModel(
@@ -397,6 +405,8 @@ final class ProfileViewController: UIViewController {
             return
         }
         
+        
+        
         guard let follower = user?.followers?.filter({
             return $0 == loggedInUserId
         }) else {
@@ -428,7 +438,7 @@ final class ProfileViewController: UIViewController {
             return $0 == loggedInUserId
        }).isEmpty ?? true
         
-        if user.isPrivate && notAFollower {
+        if user.isPrivate && notAFollower{
             emailLabel.isHidden = true
             postsCountLabel.isHidden = true
             followersCountLabel.isHidden = true

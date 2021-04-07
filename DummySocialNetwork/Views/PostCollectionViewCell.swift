@@ -13,6 +13,7 @@ protocol PostCollectionViewCellDelegate:AnyObject {
     func postCollectionViewCell(_ cell:PostCollectionViewCell,didTaplikeCountLabel label:UILabel)
     func postCollectionViewCell(_ cell:PostCollectionViewCell,didTapMoreButton button:UIButton)
     func postCollectionViewCell(_ cell:PostCollectionViewCell,didTapCommentButton button:UIButton)
+    func postCollectionViewCell(_ cell:PostCollectionViewCell,didTapNameLabel label:UILabel)
 }
 
 final class PostCollectionViewCell: UICollectionViewCell {
@@ -46,6 +47,7 @@ final class PostCollectionViewCell: UICollectionViewCell {
         label.textColor = .label
         label.font = .systemFont(ofSize: 14, weight: .semibold)
         label.numberOfLines = 0
+        label.isUserInteractionEnabled = true
         return label
     }()
     
@@ -128,6 +130,11 @@ final class PostCollectionViewCell: UICollectionViewCell {
                                              action: #selector(didTaplikeCountLabel(_:)))
         likeCountLabel.addGestureRecognizer(gesture)
         
+        let nameTapgesture = UITapGestureRecognizer(target: self,
+                                             action: #selector(didTapNameLabel(_:)))
+        nameLabel.addGestureRecognizer(nameTapgesture)
+        
+        
     }
     
     
@@ -149,6 +156,11 @@ final class PostCollectionViewCell: UICollectionViewCell {
     @objc private func didTaplikeUnlikeButton(_ sender:UIButton) {
         delegate?.postCollectionViewCell(self,
                                          didTaplikeUnlikeButton: sender)
+    }
+    
+    @objc private func didTapNameLabel(_ sender:UILabel) {
+        delegate?.postCollectionViewCell(self,
+                                         didTapNameLabel: sender)
     }
     
     required init?(coder: NSCoder) {
