@@ -45,8 +45,19 @@
 		96C9A7B526130D3200047F41 /* SearchResultsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96C9A7B426130D3200047F41 /* SearchResultsViewController.swift */; };
 		96E9D59A261757F10092651A /* RecommendedUsersCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96E9D599261757F10092651A /* RecommendedUsersCollectionViewCell.swift */; };
 		96E9D59D26175B940092651A /* RecommendedUsersViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96E9D59C26175B940092651A /* RecommendedUsersViewModel.swift */; };
+		96F592DF261DC8A000CEBB7D /* LoginApiUnitTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96F592DE261DC8A000CEBB7D /* LoginApiUnitTests.swift */; };
 		B6098C03E8814E6E1CF6B448 /* Pods_DummySocialNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1326ADC7C6F1D83BE1B133BE /* Pods_DummySocialNetwork.framework */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		96F592E1261DC8A000CEBB7D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 9639AA8B260F5BB300B9260E /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 9639AA92260F5BB300B9260E;
+			remoteInfo = DummySocialNetwork;
+		};
+/* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		1326ADC7C6F1D83BE1B133BE /* Pods_DummySocialNetwork.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_DummySocialNetwork.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -91,6 +102,9 @@
 		96C9A7B426130D3200047F41 /* SearchResultsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchResultsViewController.swift; sourceTree = "<group>"; };
 		96E9D599261757F10092651A /* RecommendedUsersCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecommendedUsersCollectionViewCell.swift; sourceTree = "<group>"; };
 		96E9D59C26175B940092651A /* RecommendedUsersViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecommendedUsersViewModel.swift; sourceTree = "<group>"; };
+		96F592DC261DC8A000CEBB7D /* DummySocialNetworkTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DummySocialNetworkTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		96F592DE261DC8A000CEBB7D /* LoginApiUnitTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginApiUnitTests.swift; sourceTree = "<group>"; };
+		96F592E0261DC8A000CEBB7D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		DFB1D7C826C34C26DD5DC4A0 /* Pods-DummySocialNetwork.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DummySocialNetwork.debug.xcconfig"; path = "Target Support Files/Pods-DummySocialNetwork/Pods-DummySocialNetwork.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -100,6 +114,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				B6098C03E8814E6E1CF6B448 /* Pods_DummySocialNetwork.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		96F592D9261DC8A000CEBB7D /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -119,6 +140,7 @@
 			isa = PBXGroup;
 			children = (
 				9639AA95260F5BB400B9260E /* DummySocialNetwork */,
+				96F592DD261DC8A000CEBB7D /* DummySocialNetworkTests */,
 				9639AA94260F5BB400B9260E /* Products */,
 				5CA4FECFD1905C436B812FEE /* Pods */,
 				FB5882E3E8531990DAE440FD /* Frameworks */,
@@ -129,6 +151,7 @@
 			isa = PBXGroup;
 			children = (
 				9639AA93260F5BB400B9260E /* DummySocialNetwork.app */,
+				96F592DC261DC8A000CEBB7D /* DummySocialNetworkTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -259,6 +282,15 @@
 			path = Others;
 			sourceTree = "<group>";
 		};
+		96F592DD261DC8A000CEBB7D /* DummySocialNetworkTests */ = {
+			isa = PBXGroup;
+			children = (
+				96F592DE261DC8A000CEBB7D /* LoginApiUnitTests.swift */,
+				96F592E0261DC8A000CEBB7D /* Info.plist */,
+			);
+			path = DummySocialNetworkTests;
+			sourceTree = "<group>";
+		};
 		FB5882E3E8531990DAE440FD /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -289,6 +321,24 @@
 			productReference = 9639AA93260F5BB400B9260E /* DummySocialNetwork.app */;
 			productType = "com.apple.product-type.application";
 		};
+		96F592DB261DC8A000CEBB7D /* DummySocialNetworkTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 96F592E5261DC8A000CEBB7D /* Build configuration list for PBXNativeTarget "DummySocialNetworkTests" */;
+			buildPhases = (
+				96F592D8261DC8A000CEBB7D /* Sources */,
+				96F592D9261DC8A000CEBB7D /* Frameworks */,
+				96F592DA261DC8A000CEBB7D /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				96F592E2261DC8A000CEBB7D /* PBXTargetDependency */,
+			);
+			name = DummySocialNetworkTests;
+			productName = DummySocialNetworkTests;
+			productReference = 96F592DC261DC8A000CEBB7D /* DummySocialNetworkTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -300,6 +350,10 @@
 				TargetAttributes = {
 					9639AA92260F5BB300B9260E = {
 						CreatedOnToolsVersion = 12.2;
+					};
+					96F592DB261DC8A000CEBB7D = {
+						CreatedOnToolsVersion = 12.2;
+						TestTargetID = 9639AA92260F5BB300B9260E;
 					};
 				};
 			};
@@ -317,6 +371,7 @@
 			projectRoot = "";
 			targets = (
 				9639AA92260F5BB300B9260E /* DummySocialNetwork */,
+				96F592DB261DC8A000CEBB7D /* DummySocialNetworkTests */,
 			);
 		};
 /* End PBXProject section */
@@ -328,6 +383,13 @@
 			files = (
 				9639AAA3260F5BB400B9260E /* LaunchScreen.storyboard in Resources */,
 				9639AAA0260F5BB400B9260E /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		96F592DA261DC8A000CEBB7D /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -419,7 +481,23 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		96F592D8261DC8A000CEBB7D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				96F592DF261DC8A000CEBB7D /* LoginApiUnitTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		96F592E2261DC8A000CEBB7D /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 9639AA92260F5BB300B9260E /* DummySocialNetwork */;
+			targetProxy = 96F592E1261DC8A000CEBB7D /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		9639AAA1260F5BB400B9260E /* LaunchScreen.storyboard */ = {
@@ -589,6 +667,46 @@
 			};
 			name = Release;
 		};
+		96F592E3261DC8A000CEBB7D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = NBL2DFM5E9;
+				INFOPLIST_FILE = DummySocialNetworkTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.shivamrishi.DummySocialNetworkTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/DummySocialNetwork.app/DummySocialNetwork";
+			};
+			name = Debug;
+		};
+		96F592E4261DC8A000CEBB7D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = NBL2DFM5E9;
+				INFOPLIST_FILE = DummySocialNetworkTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.shivamrishi.DummySocialNetworkTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/DummySocialNetwork.app/DummySocialNetwork";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -606,6 +724,15 @@
 			buildConfigurations = (
 				9639AAA8260F5BB400B9260E /* Debug */,
 				9639AAA9260F5BB400B9260E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		96F592E5261DC8A000CEBB7D /* Build configuration list for PBXNativeTarget "DummySocialNetworkTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				96F592E3261DC8A000CEBB7D /* Debug */,
+				96F592E4261DC8A000CEBB7D /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
