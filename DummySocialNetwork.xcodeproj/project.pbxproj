@@ -33,6 +33,7 @@
 		968635692617601D002BB676 /* RecommendedUsersHeaderCollectionReusableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 968635682617601D002BB676 /* RecommendedUsersHeaderCollectionReusableView.swift */; };
 		968A489E26130FE2006A7EA7 /* SearchResultsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 968A489D26130FE2006A7EA7 /* SearchResultsTableViewCell.swift */; };
 		968A48A1261316E0006A7EA7 /* SearchResultsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 968A48A0261316E0006A7EA7 /* SearchResultsViewModel.swift */; };
+		969D9B6D261E1A1E00FD5722 /* HomeFeedApiUnitTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 969D9B6C261E1A1E00FD5722 /* HomeFeedApiUnitTests.swift */; };
 		96B5F40026162FFE000D692D /* ListUsersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96B5F3FF26162FFE000D692D /* ListUsersViewController.swift */; };
 		96B5F403261631BA000D692D /* ListUsersViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96B5F402261631BA000D692D /* ListUsersViewModel.swift */; };
 		96B5F406261631E3000D692D /* ListUsersTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96B5F405261631E3000D692D /* ListUsersTableViewCell.swift */; };
@@ -93,6 +94,7 @@
 		968635682617601D002BB676 /* RecommendedUsersHeaderCollectionReusableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecommendedUsersHeaderCollectionReusableView.swift; sourceTree = "<group>"; };
 		968A489D26130FE2006A7EA7 /* SearchResultsTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchResultsTableViewCell.swift; sourceTree = "<group>"; };
 		968A48A0261316E0006A7EA7 /* SearchResultsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchResultsViewModel.swift; sourceTree = "<group>"; };
+		969D9B6C261E1A1E00FD5722 /* HomeFeedApiUnitTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeFeedApiUnitTests.swift; sourceTree = "<group>"; };
 		96B5F3FF26162FFE000D692D /* ListUsersViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListUsersViewController.swift; sourceTree = "<group>"; };
 		96B5F402261631BA000D692D /* ListUsersViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListUsersViewModel.swift; sourceTree = "<group>"; };
 		96B5F405261631E3000D692D /* ListUsersTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListUsersTableViewCell.swift; sourceTree = "<group>"; };
@@ -296,6 +298,7 @@
 				96D74B3A261DF509005C6FF3 /* SignUpApiUnitTests.swift */,
 				96D74B48261DFE96005C6FF3 /* ChangePasswordApiUnitTests.swift */,
 				96F592E0261DC8A000CEBB7D /* Info.plist */,
+				969D9B6C261E1A1E00FD5722 /* HomeFeedApiUnitTests.swift */,
 			);
 			path = DummySocialNetworkTests;
 			sourceTree = "<group>";
@@ -498,6 +501,7 @@
 				96D74B3B261DF509005C6FF3 /* SignUpApiUnitTests.swift in Sources */,
 				96F592DF261DC8A000CEBB7D /* LoginApiUnitTests.swift in Sources */,
 				96D74B49261DFE96005C6FF3 /* ChangePasswordApiUnitTests.swift in Sources */,
+				969D9B6D261E1A1E00FD5722 /* HomeFeedApiUnitTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

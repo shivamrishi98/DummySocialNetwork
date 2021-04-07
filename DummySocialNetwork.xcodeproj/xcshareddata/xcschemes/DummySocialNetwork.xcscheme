@@ -26,13 +26,14 @@
       buildConfiguration = "Debug"
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
-      shouldUseLaunchSchemeArgsEnv = "YES">
+      shouldUseLaunchSchemeArgsEnv = "YES"
+      codeCoverageEnabled = "YES">
       <Testables>
          <TestableReference
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "96F592AD261DC67E00CEBB7D"
+               BlueprintIdentifier = "96F592DB261DC8A000CEBB7D"
                BuildableName = "DummySocialNetworkTests.xctest"
                BlueprintName = "DummySocialNetworkTests"
                ReferencedContainer = "container:DummySocialNetwork.xcodeproj">
