@@ -45,6 +45,7 @@
 		96C9A7B526130D3200047F41 /* SearchResultsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96C9A7B426130D3200047F41 /* SearchResultsViewController.swift */; };
 		96E9D59A261757F10092651A /* RecommendedUsersCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96E9D599261757F10092651A /* RecommendedUsersCollectionViewCell.swift */; };
 		96E9D59D26175B940092651A /* RecommendedUsersViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96E9D59C26175B940092651A /* RecommendedUsersViewModel.swift */; };
+		96F592F1261DDB8D00CEBB7D /* Generic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96F592F0261DDB8D00CEBB7D /* Generic.swift */; };
 		B6098C03E8814E6E1CF6B448 /* Pods_DummySocialNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1326ADC7C6F1D83BE1B133BE /* Pods_DummySocialNetwork.framework */; };
 /* End PBXBuildFile section */
 
@@ -91,6 +92,7 @@
 		96C9A7B426130D3200047F41 /* SearchResultsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchResultsViewController.swift; sourceTree = "<group>"; };
 		96E9D599261757F10092651A /* RecommendedUsersCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecommendedUsersCollectionViewCell.swift; sourceTree = "<group>"; };
 		96E9D59C26175B940092651A /* RecommendedUsersViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecommendedUsersViewModel.swift; sourceTree = "<group>"; };
+		96F592F0261DDB8D00CEBB7D /* Generic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Generic.swift; sourceTree = "<group>"; };
 		DFB1D7C826C34C26DD5DC4A0 /* Pods-DummySocialNetwork.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DummySocialNetwork.debug.xcconfig"; path = "Target Support Files/Pods-DummySocialNetwork/Pods-DummySocialNetwork.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -150,6 +152,7 @@
 		9639AAAC260F5BD800B9260E /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				96F592F0261DDB8D00CEBB7D /* Generic.swift */,
 				967D25E2260F7511001F442E /* Auth.swift */,
 				967D25E5260F7DBD001F442E /* User.swift */,
 				96BF29592610EB55000EBB61 /* Post.swift */,
@@ -394,6 +397,7 @@
 				96BF295D2610F813000EBB61 /* SettingsViewController.swift in Sources */,
 				967D25D9260F6446001F442E /* ApiManager.swift in Sources */,
 				96BF29572610E9A7000EBB61 /* PostViewModel.swift in Sources */,
+				96F592F1261DDB8D00CEBB7D /* Generic.swift in Sources */,
 				967D25F3260F8E05001F442E /* ProfileViewModel.swift in Sources */,
 				967D25E3260F7511001F442E /* Auth.swift in Sources */,
 				96BF38FB26108851009A8C28 /* EditProfileViewController.swift in Sources */,

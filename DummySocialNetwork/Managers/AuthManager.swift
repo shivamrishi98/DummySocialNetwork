@@ -89,12 +89,16 @@ final class AuthManager {
             }
             
             do {
-                let result = try JSONDecoder().decode(LoginResponse.self, from: data)
-                completion(.success(result))
+                let result = try JSONDecoder().decode(BaseResponse<LoginResponse>.self, from: data)
+                if let error = result.error {
+                    completion(.failure(error))
+                }
+                if let data = result.data {
+                    completion(.success(data))
+                }
             } catch {
                 completion(.failure(error))
             }
-            
         }
         task.resume()
     }
