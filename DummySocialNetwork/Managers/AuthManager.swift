@@ -138,14 +138,16 @@ final class AuthManager {
                 return
             }
             do {
-                let result = try JSONDecoder().decode(ChangePasswordResponse.self,
+                let result = try JSONDecoder().decode(BaseResponse<ChangePasswordResponse>.self,
                                                  from: data)
-                if result.message.contains("Invalid") {
+
+                if let _ = result.error {
                     completion(false)
-                    return
                 }
-                completion(true)
-                
+                if let _ = result.data {
+                    completion(true)
+                }
+
             } catch {
                 completion(false)
             }
