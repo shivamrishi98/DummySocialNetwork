@@ -43,6 +43,7 @@
 		96BF295D2610F813000EBB61 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96BF295C2610F813000EBB61 /* SettingsViewController.swift */; };
 		96BF29602610FC5C000EBB61 /* SettingsSectionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96BF295F2610FC5C000EBB61 /* SettingsSectionViewModel.swift */; };
 		96BF38FB26108851009A8C28 /* EditProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96BF38FA26108851009A8C28 /* EditProfileViewController.swift */; };
+		96C86DB6261ED8B5006C902F /* StoriesApiUnitTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96C86DB5261ED8B5006C902F /* StoriesApiUnitTests.swift */; };
 		96C9A7B226130AB900047F41 /* SearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96C9A7B126130AB900047F41 /* SearchViewController.swift */; };
 		96C9A7B526130D3200047F41 /* SearchResultsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96C9A7B426130D3200047F41 /* SearchResultsViewController.swift */; };
 		96D74B3B261DF509005C6FF3 /* SignUpApiUnitTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96D74B3A261DF509005C6FF3 /* SignUpApiUnitTests.swift */; };
@@ -105,6 +106,7 @@
 		96BF295C2610F813000EBB61 /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		96BF295F2610FC5C000EBB61 /* SettingsSectionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsSectionViewModel.swift; sourceTree = "<group>"; };
 		96BF38FA26108851009A8C28 /* EditProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditProfileViewController.swift; sourceTree = "<group>"; };
+		96C86DB5261ED8B5006C902F /* StoriesApiUnitTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoriesApiUnitTests.swift; sourceTree = "<group>"; };
 		96C9A7B126130AB900047F41 /* SearchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewController.swift; sourceTree = "<group>"; };
 		96C9A7B426130D3200047F41 /* SearchResultsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchResultsViewController.swift; sourceTree = "<group>"; };
 		96D74B3A261DF509005C6FF3 /* SignUpApiUnitTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpApiUnitTests.swift; sourceTree = "<group>"; };
@@ -302,6 +304,7 @@
 				96D74B48261DFE96005C6FF3 /* ChangePasswordApiUnitTests.swift */,
 				969D9B6C261E1A1E00FD5722 /* HomeFeedApiUnitTests.swift */,
 				9687D726261ED4A400D256C5 /* RecommendedUsersApiUnitTests.swift */,
+				96C86DB5261ED8B5006C902F /* StoriesApiUnitTests.swift */,
 			);
 			path = DummySocialNetworkTests;
 			sourceTree = "<group>";
@@ -501,6 +504,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				96C86DB6261ED8B5006C902F /* StoriesApiUnitTests.swift in Sources */,
 				96D74B3B261DF509005C6FF3 /* SignUpApiUnitTests.swift in Sources */,
 				9687D727261ED4A400D256C5 /* RecommendedUsersApiUnitTests.swift in Sources */,
 				96F592DF261DC8A000CEBB7D /* LoginApiUnitTests.swift in Sources */,
