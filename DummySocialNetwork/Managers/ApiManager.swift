@@ -635,9 +635,14 @@ final class ApiManager {
                 }
                 
                 do {
-                    let results = try JSONDecoder().decode(SearchUsersResult.self,
+                    let result = try JSONDecoder().decode(BaseResponse<SearchUsersResult>.self,
                                                            from: data)
-                    completion(.success(results.users))
+                    if let error = result.error {
+                        completion(.failure(error))
+                    }
+                    if let data = result.data?.users {
+                        completion(.success(data))
+                    }
                 } catch {
                     completion(.failure(error))
                 }
