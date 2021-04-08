@@ -663,9 +663,14 @@ final class ApiManager {
                     return
                 }
                 do {
-                    let _ = try JSONDecoder().decode(CreateStoryResponse.self,
+                    let result = try JSONDecoder().decode(BaseResponse<CreateStoryResponse>.self,
                                                         from: data)
-                    completion(true)
+                    if let _ = result.error {
+                        completion(false)
+                    }
+                    if let _ = result.data?.message {
+                        completion(true)
+                    }
                 } catch {
                     completion(false)
                 }
@@ -684,9 +689,14 @@ final class ApiManager {
                 }
                 
                 do {
-                    let results = try JSONDecoder().decode(StoriesResponse.self,
+                    let result = try JSONDecoder().decode(BaseResponse<StoriesResponse>.self,
                                                            from: data)
-                    completion(.success(results.stories))
+                    if let error = result.error {
+                        completion(.failure(error))
+                    }
+                    if let data = result.data?.stories {
+                        completion(.success(data))
+                    }
                 } catch {
                     completion(.failure(error))
                 }
