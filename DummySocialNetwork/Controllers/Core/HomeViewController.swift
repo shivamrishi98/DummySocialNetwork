@@ -446,6 +446,33 @@ extension HomeViewController:PostCollectionViewCellDelegate {
             }
         }
     }
+    
+    func postCollectionViewCell(_ cell: PostCollectionViewCell, didTapNameLabel label: UILabel) {
+                
+        guard let userId = UserDefaults.standard.value(forKey: "userId") as? String else {
+            return
+        }
+        
+        guard let indexPath = collectionView.indexPath(for: cell) else {
+            return
+        }
+
+        let model = posts[indexPath.row]
+        
+        let loggedInUser = model.userId == userId
+        
+        if loggedInUser {
+            let vc = ProfileViewController(isOwner: true,
+                                           userId:model.userId)
+            navigationController?.pushViewController(vc, animated: true)
+        } else {
+            let vc = ProfileViewController(userId: model.userId)
+            navigationController?.pushViewController(vc, animated: true)
+        }
+        
+    }
+    
+    
 }
     
 extension HomeViewController:UINavigationControllerDelegate,UIImagePickerControllerDelegate {
