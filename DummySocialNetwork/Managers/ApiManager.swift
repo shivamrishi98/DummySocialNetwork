@@ -706,6 +706,68 @@ final class ApiManager {
         }
     }
     
+    // MARK: - Notifications
+    
+    public func createNotification(request requestModel:CreateNotificationRequest,completion: @escaping (Bool)->Void) {
+        print(requestModel)
+        createRequest(with: URL(string: Constants.baseUrl + "/notifications/create?postId=\(requestModel.postId)"),
+                      type: .POST) { baseRequest in
+            var request = baseRequest
+            let json:[String:String] = [
+                    "message":requestModel.message
+            ]
+            request.httpBody = try? JSONSerialization.data(withJSONObject: json,
+                                                           options: .fragmentsAllowed)
+            let task = URLSession.shared.dataTask(with: request) { data, _, error in
+                guard let data = data, error == nil else {
+                    completion(false)
+                    return
+                }
+                do {
+                    let result = try JSONDecoder().decode(BaseResponse<CreateNotificationResponse>.self,
+                                                          from: data)
+                    if let _ = result.error {
+                        completion(false)
+                    }
+                    if let _ = result.data?.message {
+                        completion(true)
+                    }
+                } catch {
+                    completion(false)
+                }
+            }
+            task.resume()
+        }
+    }
+    
+    public func getAllNotifications(completion: @escaping (Result<[UserNotification],Error>) -> Void) {
+        createRequest(with: URL(string: Constants.baseUrl + "/notifications/"),
+                      type: .GET) { request in
+            let task = URLSession.shared.dataTask(with: request) { data, _, error in
+                guard let data = data, error == nil else {
+                    completion(.failure(ApiError.failedToGetData))
+                    return
+                }
+                
+                do {
+                    let result = try JSONDecoder().decode(BaseResponse<NotificationsResponse>.self,
+                                                           from: data)
+                    if let error = result.error {
+                        completion(.failure(error))
+                    }
+                    if let data = result.data?.notifications {
+                        completion(.success(data))
+                    }
+                } catch {
+                    completion(.failure(error))
+                }
+                
+            }
+            task.resume()
+        }
+    }
+
+    
     
     
 }
