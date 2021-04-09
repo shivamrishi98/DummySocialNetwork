@@ -26,6 +26,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             let navVC = UINavigationController(rootViewController: vc)
             navVC.navigationItem.largeTitleDisplayMode = .always
             navVC.navigationBar.prefersLargeTitles = true
+            navVC.navigationBar.tintColor = .label
             window?.rootViewController = navVC
         }
         

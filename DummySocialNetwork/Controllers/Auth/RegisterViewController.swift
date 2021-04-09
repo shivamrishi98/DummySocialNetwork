@@ -9,18 +9,17 @@ import UIKit
 
 final class RegisterViewController: UIViewController {
 
+    
+    private let carouselViewModels = [
+        CarouselViewModel(imageName: "socialNetwork",
+                          title: "Connect with friends"),
+        CarouselViewModel(imageName: "WritePost",
+                          title: "Share your ideas")
+    ]
+    
     private let scrollView:UIScrollView = {
         let scrollView = UIScrollView()
         return scrollView
-    }()
-    
-    private let titleLabel:UILabel = {
-        let label = UILabel()
-        label.text = "Social Network"
-        label.textColor = .label
-        label.textAlignment = .center
-        label.font = .systemFont(ofSize: 42, weight: .semibold)
-        return label
     }()
     
     private let nameTextfield:UITextField = {
@@ -103,7 +102,6 @@ final class RegisterViewController: UIViewController {
         view.backgroundColor = .systemBackground
         title = "Register"
         view.addSubview(scrollView)
-        scrollView.addSubview(titleLabel)
         scrollView.addSubview(nameTextfield)
         scrollView.addSubview(emailTextfield)
         scrollView.addSubview(passwordTextfield)
@@ -153,12 +151,18 @@ final class RegisterViewController: UIViewController {
         
         scrollView.frame = view.bounds
         
-        titleLabel.frame = CGRect(x: 20,
-                                  y: 50,
-                                  width: view.width-40,
-                                  height: 40)
+        let carouselSize = CGRect(x: 0,
+                                  y: 15,
+                                  width: view.frame.size.width,
+                                  height: 260)
+        let carouselView = CarouselView(frame: carouselSize,
+                                        viewModels: carouselViewModels)
+        scrollView.addSubview(carouselView)
+        carouselView.backgroundColor = .secondarySystemBackground
+        
+        
         nameTextfield.frame = CGRect(x: 50,
-                                      y:titleLabel.bottom + 50,
+                                      y:carouselView.bottom + 20,
                                       width: view.width-100,
                                       height: 44)
         
