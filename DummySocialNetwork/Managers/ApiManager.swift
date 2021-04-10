@@ -709,12 +709,11 @@ final class ApiManager {
     // MARK: - Notifications
     
     public func createNotification(request requestModel:CreateNotificationRequest,completion: @escaping (Bool)->Void) {
-        print(requestModel)
         createRequest(with: URL(string: Constants.baseUrl + "/notifications/create?postId=\(requestModel.postId)"),
                       type: .POST) { baseRequest in
             var request = baseRequest
             let json:[String:String] = [
-                    "message":requestModel.message
+                "type":requestModel.type.rawValue
             ]
             request.httpBody = try? JSONSerialization.data(withJSONObject: json,
                                                            options: .fragmentsAllowed)
@@ -725,6 +724,31 @@ final class ApiManager {
                 }
                 do {
                     let result = try JSONDecoder().decode(BaseResponse<CreateNotificationResponse>.self,
+                                                          from: data)
+                    if let _ = result.error {
+                        completion(false)
+                    }
+                    if let _ = result.data?.message {
+                        completion(true)
+                    }
+                } catch {
+                    completion(false)
+                }
+            }
+            task.resume()
+        }
+    }
+    
+    public func deleteNotification(request requestModel:DeleteNotificationRequest,completion: @escaping (Bool)->Void) {
+        createRequest(with: URL(string: Constants.baseUrl + "/notifications/delete?postId=\(requestModel.postId)"),
+                      type: .POST) { request in
+            let task = URLSession.shared.dataTask(with: request) { data, _, error in
+                guard let data = data, error == nil else {
+                    completion(false)
+                    return
+                }
+                do {
+                    let result = try JSONDecoder().decode(BaseResponse<DeleteNotificationResponse>.self,
                                                           from: data)
                     if let _ = result.error {
                         completion(false)

@@ -9,5 +9,6 @@ import Foundation
 
 struct NotificationViewModel {
     let message:String
+    let contentUrl:URL?
     let createdDate:String
 }

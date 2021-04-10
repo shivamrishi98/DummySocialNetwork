@@ -336,12 +336,8 @@ extension HomeViewController:PostCollectionViewCellDelegate {
                                         for: .normal)
                         button.accessibilityIdentifier = "hand.thumbsup.fill"
                         let request = CreateNotificationRequest(postId: post._id,
-                                                                message: "liked your post")
-                        
+                                                                type: .like)
                         ApiManager.shared.createNotification(request: request) { success in
-                            NotificationCenter.default.post(name: .didNotifyNotificationsUpdate,
-                                                            object: nil,
-                                                            userInfo: [:])
                             self?.fetchHomeFeed()
                         }
                     }
@@ -355,7 +351,10 @@ extension HomeViewController:PostCollectionViewCellDelegate {
                         button.setImage(UIImage(systemName: "hand.thumbsup"),
                                         for: .normal)
                         button.accessibilityIdentifier = "hand.thumbsup"
-                        self?.fetchHomeFeed()
+                        let request = DeleteNotificationRequest(postId: post._id)
+                        ApiManager.shared.deleteNotification(request: request) { success in
+                            self?.fetchHomeFeed()
+                        }
                     }
                 }
             }

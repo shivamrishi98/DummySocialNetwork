@@ -7,9 +7,15 @@
 
 import Foundation
 
+
+enum NotificationType:String,Codable {
+    case like = "like"
+    case comment = "comment"
+}
+
 struct CreateNotificationRequest:Codable {
     let postId:String
-    let message:String
+    let type:NotificationType
 }
 
 struct CreateNotificationResponse:Codable {
@@ -26,5 +32,14 @@ struct UserNotification:Codable {
     let senderId:String
     let receiverId:String
     let message:String
+    let contentUrl:String?
     let createdDate:String
+}
+
+struct DeleteNotificationRequest:Codable {
+    let postId:String
+}
+
+struct DeleteNotificationResponse:Codable {
+    let message:String
 }

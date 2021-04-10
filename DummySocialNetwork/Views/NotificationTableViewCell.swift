@@ -6,10 +6,19 @@
 //
 
 import UIKit
+import SDWebImage
 
 class NotificationTableViewCell: UITableViewCell {
 
     static let identifier = "NotificationTableViewCell"
+    
+    private let postImageView:UIImageView = {
+        let imageView = UIImageView()
+        imageView.tintColor = .label
+        imageView.contentMode = .scaleAspectFill
+        imageView.clipsToBounds = true
+        return imageView
+    }()
     
     private let messageLabel:UILabel = {
         let label = UILabel()
@@ -23,6 +32,7 @@ class NotificationTableViewCell: UITableViewCell {
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         contentView.addSubview(messageLabel)
+        contentView.addSubview(postImageView)
     }
     
     required init?(coder: NSCoder) {
@@ -34,18 +44,27 @@ class NotificationTableViewCell: UITableViewCell {
     
         messageLabel.frame = CGRect(x: 10,
                                     y: 5,
-                                    width: frame.width-30,
+                                    width: width-height-20,
                                     height: height-10)
+        
+        postImageView.frame = CGRect(x: messageLabel.right + 5,
+                                     y: 5,
+                                     width: height-10,
+                                     height: height-10)
         
     }
     
     override func prepareForReuse() {
         super.prepareForReuse()
         messageLabel.text = nil
+        postImageView.image = nil
     }
     
     func configure(with viewModel:NotificationViewModel) {
         messageLabel.text = "\(viewModel.message) at \(viewModel.createdDate)"
+        postImageView.sd_setImage(with: viewModel.contentUrl,
+                               placeholderImage: UIImage(systemName: "photo"),
+                               completed: nil)
     }
 
 

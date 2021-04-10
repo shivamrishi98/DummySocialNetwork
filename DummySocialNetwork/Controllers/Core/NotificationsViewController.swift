@@ -28,8 +28,6 @@ class NotificationsViewController: UIViewController {
        return label
    }()
     
-    private var observer:NSObjectProtocol?
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         title = "Notifications"
@@ -40,16 +38,9 @@ class NotificationsViewController: UIViewController {
         
         tableView.delegate = self
         tableView.dataSource = self
+        tableView.tableFooterView = UIView()
         
         fetchData()
-        
-        observer = NotificationCenter.default.addObserver(
-            forName: .didNotifyNotificationsUpdate,
-            object: nil,
-            queue: .main,
-            using: { [weak self] _ in
-                self?.fetchData()
-            })
         
     }
     
@@ -108,6 +99,7 @@ extension NotificationsViewController:UITableViewDelegate,UITableViewDataSource 
         let model = notifications[indexPath.row]
         let viewModel = NotificationViewModel(
             message: model.message,
+            contentUrl: URL(string: model.contentUrl ?? ""),
             createdDate: String.formattedDate(string: model.createdDate, dateFormat: "d MMM hh:mm a"))
         cell.configure(with: viewModel)
         return cell
@@ -117,5 +109,8 @@ extension NotificationsViewController:UITableViewDelegate,UITableViewDataSource 
         tableView.deselectRow(at: indexPath, animated: true)
     }
 
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 65
+    }
     
 }
