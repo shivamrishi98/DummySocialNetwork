@@ -28,6 +28,11 @@ class NotificationsViewController: UIViewController {
        return label
    }()
     
+    private let refreshControl:UIRefreshControl = {
+        let refreshControl = UIRefreshControl()
+        return refreshControl
+    }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         title = "Notifications"
@@ -39,9 +44,16 @@ class NotificationsViewController: UIViewController {
         tableView.delegate = self
         tableView.dataSource = self
         tableView.tableFooterView = UIView()
-        
+        tableView.refreshControl = refreshControl
+        refreshControl.addTarget(self, action: #selector(didPullToRefresh), for: .valueChanged)
         fetchData()
         
+    }
+    
+    @objc private func didPullToRefresh() {
+        DispatchQueue.main.async { [weak self] in
+            self?.fetchData()
+        }
     }
     
     override func viewDidLayoutSubviews() {
@@ -67,6 +79,7 @@ class NotificationsViewController: UIViewController {
             tableView.isHidden = false
         }
         tableView.reloadData()
+        refreshControl.endRefreshing()
     }
     
     private func fetchData() {
